@@ -56,7 +56,7 @@ jobs:
         with:
           tree-sitter-ref: ${{env.TREE_SITTER_REF}}
       - name: Build parser
-        run: tree-sitter build
+        run: tree-sitter build -o lp.so
       - name: Set up ts_query_ls
         run: curl -fsSL "https://github.com/ribru17/ts_query_ls/releases/download/${TS_QUERY_LS_VERSION}/ts_query_ls-x86_64-unknown-linux-gnu.tar.gz" | tar -xz
       - name: Check queries
