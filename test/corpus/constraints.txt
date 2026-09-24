@@ -1,0 +1,367 @@
+================================================================================
+Named constraint with colon
+================================================================================
+minimize
+x
+subject to
+c1: x1 + x2 <= 10
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Named constraint with double colon
+================================================================================
+minimize
+x
+subject to
+c1:: x1 <= 10
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Unnamed constraint
+================================================================================
+minimize
+x
+subject to
+x1 + x2 >= 5
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+All comparison operators
+================================================================================
+minimize
+x
+subject to
+c1: x <= 10
+c2: x >= 0
+c3: x = 5
+c4: x < 10
+c5: x > 0
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Constraint with leading negative sign
+================================================================================
+minimize
+x
+subject to
+c1: - x1 + x2 <= 10
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Subject To keyword variants
+================================================================================
+minimize
+x
+st
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Multiple constraints
+================================================================================
+minimize
+x
+subject to
+c1: x1 + x2 <= 10
+c2: x1 - 3 x2 <= 30
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Empty constraints section
+================================================================================
+minimize
+x
+st
+bounds
+x1 <= 10
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Subject To with colon variant
+================================================================================
+minimize
+x
+st:
+c1: x1 <= 10
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+s.t. keyword variant
+================================================================================
+minimize
+x
+s.t.
+c1: x1 <= 10
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+such that keyword variant
+================================================================================
+minimize
+x
+such that
+c1: x1 <= 10
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Constraint with negative RHS
+================================================================================
+minimize
+x
+subject to
+c1: x1 + x2 <= -5
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))

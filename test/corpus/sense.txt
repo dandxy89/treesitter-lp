@@ -1,0 +1,132 @@
+================================================================================
+Minimize keyword
+================================================================================
+minimize
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Maximize keyword
+================================================================================
+maximize
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Min abbreviation
+================================================================================
+min
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Max abbreviation
+================================================================================
+max
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Case insensitive MINIMIZE
+================================================================================
+MINIMIZE
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Minimise British spelling
+================================================================================
+minimise
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Maximum keyword
+================================================================================
+maximum
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))

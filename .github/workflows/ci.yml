@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+env:
+  TREE_SITTER_REF: v0.27.0 # keep in step with tree-sitter-cli in package.json
+
+jobs:
+  test:
+    name: Test parser
+    runs-on: ${{matrix.os}}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@49f8c1f20b60102eae8c033bb7c7f6cd056f6086 # v2
+        with:
+          tree-sitter-ref: ${{env.TREE_SITTER_REF}}
+      - name: Run tests
+        uses: tree-sitter/parser-test-action@05f6ce7c7e54603c45cd87ed926725dc870bcc63 # v3
+        with:
+          test-rust: ${{runner.os == 'Linux'}}
+          test-node: ${{runner.os == 'Linux'}}
+          test-python: ${{runner.os == 'Linux'}}
+
+  query:
+    name: Validate queries
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TS_QUERY_LS_VERSION: v3.16.0
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@49f8c1f20b60102eae8c033bb7c7f6cd056f6086 # v2
+        with:
+          tree-sitter-ref: ${{env.TREE_SITTER_REF}}
+      - name: Build parser
+        run: tree-sitter build
+      - name: Set up ts_query_ls
+        run: curl -fsSL "https://github.com/ribru17/ts_query_ls/releases/download/${TS_QUERY_LS_VERSION}/ts_query_ls-x86_64-unknown-linux-gnu.tar.gz" | tar -xz
+      - name: Check queries
+        run: ./ts_query_ls check -f queries/
+
+  format:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check grammar.js formatting
+        run: npx --yes prettier@3 --check grammar.js

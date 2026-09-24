@@ -1,0 +1,376 @@
+================================================================================
+Empty bounds section
+================================================================================
+Minimize
+obj:  x + 10 y
+Subject To
+r01:  x + y  >= 1
+Bounds
+Binaries
+ x y
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword))
+  (binaries_section
+    (binaries_keyword)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Three objectives with multiline
+================================================================================
+Minimize
+ obj1: -0.5 x - 2 y - 8 z
+ obj2: y + x + z
+ obj3: 10 z - 2.5 x
+       + y
+Subject To
+ cons1: -199 x + 10 y + z <= 0
+ cons2: y + z  >= 0
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))))
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))))
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+All variable types with bounds
+================================================================================
+Max
+ cost: -2 x - 3 y + 4 z
+Subject To
+ cons: 4.4 x + 5.5 y + 6.6 z  <= 120
+Bounds
+ x free
+ 10 <= y <= 12
+Binary
+ z
+General
+ y
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (free_keyword))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Scientific notation with infinity bounds
+================================================================================
+Minimize
+ obj: 1.5e-2 x1 + 3.2E+3 x2
+Subject To
+ c1: 2.1e-1 x1 + 1.0e+1 x2 <= 1000
+ c2: x1 + x2 >= 0
+Bounds
+ -infinity <= x1 <= +infinity
+ 0 <= x2 <= +inf
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (infinity)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (infinity))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (infinity)))
+  (end_marker))
+
+================================================================================
+Unnamed objectives and constraints
+================================================================================
+Minimize
+x + 10 y
+Subject To
+-x + 2 y  >= 1
+Binaries
+ x y z a
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))
+      (term
+        (number)
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Semi-continuous with multiple sections
+================================================================================
+Minimize
+ b_5829890_x2
+ + b_5880854_x2
+Subject To
+ - 2 b_5829890_x2 + 2 b_5829890_x1 <= -64
+b_5880854_x2 - b_5880854_x1 >= 32
+Bounds
+b_5829890_x1 >= 10
+10 >= b_5880854_x1
+1014 <= b_5829890_x2 <= 1917
+1014 <= b_5880854_x2 <= 1917
+Generals
+b_5829890_x2 b_5880854_x2
+Binary
+b_5829890_x1
+Semi-continuous
+b_5880854_x2 x1 x2 x3
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier)
+    (identifier))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (semi_continuous_section
+    (semi_continuous_keyword)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))

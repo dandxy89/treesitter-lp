@@ -1,0 +1,196 @@
+================================================================================
+Named objective with coefficients
+================================================================================
+minimize
+obj: 2 x1 + 3 x2
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Unnamed objective bare variables
+================================================================================
+minimize
+x1 + x2
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Multiple named objectives
+================================================================================
+minimize
+obj1: x1 + 2 x2
+obj2: x2 + x3
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier))))
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Objective with negative coefficient
+================================================================================
+minimize
+obj: - x1 + 2 x2
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Objective with infinity coefficient
+================================================================================
+minimize
+obj: inf x1 + x2
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (infinity)
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Single unnamed variable objective
+================================================================================
+minimize
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Unnamed then named objectives
+================================================================================
+minimize
+x1 + x2
+obj2: x3 + x4
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))
+      (term
+        (identifier)))
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Objective with leading positive sign
+================================================================================
+minimize
+obj: + x1 + x2
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))

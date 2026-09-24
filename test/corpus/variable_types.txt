@@ -1,0 +1,149 @@
+================================================================================
+Generals section
+================================================================================
+minimize
+x
+subject to
+generals
+x1 x2
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (generals_section
+    (generals_keyword)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Integers section
+================================================================================
+minimize
+x
+subject to
+integers
+x1 x2 x3
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (integers_section
+    (integers_keyword)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Binaries section
+================================================================================
+minimize
+x
+subject to
+binaries
+x1 x2
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (binaries_section
+    (binaries_keyword)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Semi-continuous section
+================================================================================
+minimize
+x
+subject to
+semi-continuous
+x1 x2 x3
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (semi_continuous_section
+    (semi_continuous_keyword)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Binary keyword variant
+================================================================================
+minimize
+x
+subject to
+binary
+x1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Gen keyword variant
+================================================================================
+minimize
+x
+subject to
+gen
+x1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))

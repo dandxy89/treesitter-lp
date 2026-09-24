@@ -1,0 +1,79 @@
+================================================================================
+SOS section with S1 and S2
+================================================================================
+maximize
+x
+subject to
+sos
+csos1: S1:: V1:1 V3:2 V5:3
+csos2: S2:: V2:2 V4:1 V5:2.5
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      name: (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_constraint_header
+      name: (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))
+
+================================================================================
+Single SOS constraint
+================================================================================
+minimize
+x
+subject to
+sos
+c1: S1:: x1:1 x2:2
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      name: (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))

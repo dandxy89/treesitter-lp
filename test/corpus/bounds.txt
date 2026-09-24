@@ -1,0 +1,233 @@
+================================================================================
+Double bound
+================================================================================
+minimize
+x
+subject to
+bounds
+0 <= x1 <= 40
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Free variable
+================================================================================
+minimize
+x
+subject to
+bounds
+x1 free
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (free_keyword)))
+  (end_marker))
+
+================================================================================
+Lower bound
+================================================================================
+minimize
+x
+subject to
+bounds
+x1 >= 5
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Upper bound
+================================================================================
+minimize
+x
+subject to
+bounds
+x1 <= 100
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Fixed variable
+================================================================================
+minimize
+x
+subject to
+bounds
+x1 = 42
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Infinity bounds
+================================================================================
+minimize
+x
+subject to
+bounds
+-inf <= x1 <= +inf
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (infinity)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (infinity)))
+  (end_marker))
+
+================================================================================
+Scientific notation in bounds
+================================================================================
+minimize
+x
+subject to
+bounds
+0 <= x1 <= 1.5e3
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Multiple bound declarations
+================================================================================
+minimize
+x
+subject to
+bounds
+0 <= x1 <= 40
+2 <= x4 <= 3
+x5 free
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (free_keyword)))
+  (end_marker))

@@ -1,0 +1,193 @@
+================================================================================
+Section keyword mid-line is a name
+================================================================================
+min
+ x
+st
+ x >= 1
+integers
+ x bin sos end y
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (integers_section
+    (integers_keyword)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Section keyword as a label
+================================================================================
+min
+ x
+st
+ bounds: x >= 1
+ end:: x <= 3
+sos
+ bin: S1:: x:1 y:2
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))
+
+================================================================================
+Section keyword after a block comment
+================================================================================
+min
+ x
+st
+ x >= 1
+\* note *\ bounds
+ x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (block_comment)
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Mid-line block comment keeps a keyword a name
+================================================================================
+min
+ x
+st
+ x >= 1
+generals
+ x \* c *\ bin
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier)
+    (block_comment)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Single and multi-word general constraints headers
+================================================================================
+min
+ x
+st
+ x >= 0
+gen cons
+ r = ABS ( x )
+genconstrs
+ s = MIN ( x , 2 )
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (general_constraints_section
+    (general_constraints_keyword)
+    (general_constraint
+      (identifier)
+      (function_name)
+      (identifier)))
+  (general_constraints_section
+    (general_constraints_keyword)
+    (general_constraint
+      (identifier)
+      (function_name)
+      (identifier)
+      (number)))
+  (end_marker))

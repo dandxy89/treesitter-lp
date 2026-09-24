@@ -1,0 +1,46 @@
+# Rust
+target/
+
+# Node
+build/
+prebuilds/
+node_modules/
+
+# Python
+.venv/
+dist/
+__pycache__/
+*.egg-info
+*.whl
+
+# C / native artefacts
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.pc
+*.o
+*.obj
+*.wasm
+*.pyd
+*.exp
+*.lib
+
+# Local tooling
+.claude/settings.local.json
+
+# Packaging
+*.tgz
+*.tar.gz
+*.zip
+
+# tree-sitter debug output
+log.html
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+.env

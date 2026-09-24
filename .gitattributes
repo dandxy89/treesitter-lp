@@ -1,0 +1,13 @@
+* text=auto eol=lf
+
+# Generated files
+src/parser.c linguist-generated
+src/grammar.json linguist-generated
+src/node-types.json linguist-generated
+src/tree_sitter/** linguist-generated
+bindings/** linguist-generated
+binding.gyp linguist-generated
+
+# Zig bindings
+build.zig linguist-generated
+build.zig.zon linguist-generated

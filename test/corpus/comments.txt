@@ -1,0 +1,85 @@
+================================================================================
+Line comment
+================================================================================
+\ This is a comment
+minimize
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Block comment
+================================================================================
+\* This is a block comment *\
+minimize
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (block_comment)
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Block comment with asterisks inside
+================================================================================
+\* this has * stars * inside *\
+minimize
+x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (block_comment)
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Comments between sections
+================================================================================
+minimize
+x
+\ comment in the middle
+subject to
+\ another comment
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (line_comment)
+  (constraints_section
+    (subject_to_keyword))
+  (line_comment)
+  (end_marker))

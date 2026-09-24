@@ -1,0 +1,93 @@
+================================================================================
+Integer coefficients
+================================================================================
+minimize
+obj: 42 x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Float coefficients
+================================================================================
+minimize
+obj: 3.14 x + 0.5 y
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Scientific notation
+================================================================================
+minimize
+obj: 1e5 x + 1.5e-3 y
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))
+
+================================================================================
+Leading dot number
+================================================================================
+minimize
+obj: .5 x
+subject to
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword))
+  (end_marker))

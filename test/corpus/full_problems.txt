@@ -1,0 +1,273 @@
+================================================================================
+CPLEX example
+================================================================================
+Maximize
+ obj: x1 + 2 x2 + 3 x3 + x4
+Subject To
+ c1: - x1 + x2 + x3 + 10 x4 <= 20
+ c2: x1 - 3 x2 + x3 <= 30
+ c3: x2 - 3.5 x4 = 0
+Bounds
+ 0 <= x1 <= 40
+ 2 <= x4 <= 3
+General
+ x4
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Multi-objective with all variable types
+================================================================================
+Minimize
+ obj1: -0.5 x - 2 y - 8 z
+ obj2: y + x + z
+Subject To
+ cons1: -199 x + 10 y + z <= 0
+ cons2: y + z >= 0
+Binary
+ x
+General
+ y
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))))
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+No end section
+================================================================================
+minimize
+x
+subject to
+c1: x <= 10
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))))
+
+================================================================================
+SOS with bounds
+================================================================================
+Maximize
+obj: -1 V4 + 1 V5
+Subject To
+CON1: 1 V1 >= 0.0
+Bounds
+-inf <= V1 <= 3
+0 <= V5 <= 1
+General
+V4
+Binary
+V8
+SOS
+csos1: S1:: V1:1 V3:2 V5:3
+csos2: S2:: V2:2 V4:1
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (infinity)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      name: (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_constraint_header
+      name: (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))
