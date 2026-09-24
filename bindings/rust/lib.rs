@@ -44,6 +44,12 @@ pub const HIGHLIGHTS_QUERY: &str = include_str!("../../queries/highlights.scm");
 /// The local variable query for this grammar (`queries/locals.scm`).
 pub const LOCALS_QUERY: &str = include_str!("../../queries/locals.scm");
 
+/// The folding query for this grammar (`queries/folds.scm`).
+pub const FOLDS_QUERY: &str = include_str!("../../queries/folds.scm");
+
+/// The indentation query for this grammar (`queries/indents.scm`).
+pub const INDENTS_QUERY: &str = include_str!("../../queries/indents.scm");
+
 #[cfg(test)]
 mod tests {
     #[test]
@@ -52,5 +58,20 @@ mod tests {
         parser
             .set_language(&super::LANGUAGE.into())
             .expect("Error loading LP parser");
+    }
+
+    #[test]
+    fn test_queries_compile() {
+        let language = super::LANGUAGE.into();
+        for (name, source) in [
+            ("highlights", super::HIGHLIGHTS_QUERY),
+            ("locals", super::LOCALS_QUERY),
+            ("folds", super::FOLDS_QUERY),
+            ("indents", super::INDENTS_QUERY),
+        ] {
+            if let Err(e) = tree_sitter::Query::new(&language, source) {
+                panic!("{name} query does not compile: {e}");
+            }
+        }
     }
 }
