@@ -7,7 +7,15 @@ from importlib.resources import files as _files
 
 from ._binding import language
 
-HIGHLIGHTS_QUERY = (_files(__package__) / "queries/highlights.scm").read_text()
-LOCALS_QUERY = (_files(__package__) / "queries/locals.scm").read_text()
+_QUERIES = {"HIGHLIGHTS_QUERY": "highlights.scm", "LOCALS_QUERY": "locals.scm"}
+
+
+def __getattr__(name):
+    # Read lazily: queries are only bundled into built wheels, not editable installs.
+    if name in _QUERIES:
+        query = (_files(__package__) / "queries" / _QUERIES[name]).read_text()
+        globals()[name] = query
+        return query
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 __all__ = ["language", "HIGHLIGHTS_QUERY", "LOCALS_QUERY"]
