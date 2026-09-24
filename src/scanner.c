@@ -91,20 +91,20 @@ static bool is_name_char(int32_t c) {
 
 static int32_t to_lower(int32_t c) { return (c >= 'A' && c <= 'Z') ? c + ('a' - 'A') : c; }
 
-// Whether the remaining same-line text starts a second word matching the
-// multi-word `general constraints` regex (`constraints?|constrs?|cons`).
-static bool follows_constraints_word(TSLexer *lexer) {
+// Whether `first` and the next same-line word form the multi-word
+// `general constraints` token (`general constr...` or `gen cons...`), which
+// the regex token then matches instead. Like the upstream lexer's longest
+// match, only a prefix of the second word is needed.
+static bool follows_constraints_word(TSLexer *lexer, const char *first) {
+    const char *prefix = strcmp(first, "gen") == 0 ? "cons" : strcmp(first, "general") == 0 ? "constr" : NULL;
+    if (prefix == NULL) return false;
     if (lexer->lookahead != ' ' && lexer->lookahead != '\t') return false;
     while (lexer->lookahead == ' ' || lexer->lookahead == '\t') lexer->advance(lexer, false);
-    char word[WORD_MAX];
-    unsigned len = 0;
-    while (is_name_char(lexer->lookahead) && len < WORD_MAX - 1) {
-        word[len++] = (char)to_lower(lexer->lookahead);
+    for (const char *p = prefix; *p != '\0'; p++) {
+        if (to_lower(lexer->lookahead) != *p) return false;
         lexer->advance(lexer, false);
     }
-    word[len] = '\0';
-    return strcmp(word, "cons") == 0 || strcmp(word, "constr") == 0 || strcmp(word, "constrs") == 0 ||
-           strcmp(word, "constraint") == 0 || strcmp(word, "constraints") == 0;
+    return true;
 }
 
 bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
@@ -159,7 +159,7 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
         lexer->mark_end(lexer);
 
         // `gen cons` / `general constraints` belong to the regex token.
-        if (token == GENERALS_KEYWORD && follows_constraints_word(lexer)) return false;
+        if (token == GENERALS_KEYWORD && follows_constraints_word(lexer, word)) return false;
         // `bounds:` / `end::` is a label, not a section header.
         while (lexer->lookahead == ' ' || lexer->lookahead == '\t') lexer->advance(lexer, false);
         if (lexer->lookahead == ':') return false;

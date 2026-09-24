@@ -191,3 +191,50 @@ end
       (identifier)
       (number)))
   (end_marker))
+
+================================================================================
+General followed by a word that is not constr: a Generals section
+================================================================================
+min
+ x
+st
+ x >= 0
+binaries
+ x
+general cons
+generals cons
+general constr
+ r = ABS ( x )
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (general_constraints_section
+    (general_constraints_keyword)
+    (general_constraint
+      resultant: (identifier)
+      function: (function_name)
+      (identifier)))
+  (end_marker))
