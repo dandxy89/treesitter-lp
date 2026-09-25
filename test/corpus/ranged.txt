@@ -1,0 +1,749 @@
+================================================================================
+Ranged constraint with a signed lower bound
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: -4 <= x + 2 y <= 5
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Ranged constraint whose first term has a coefficient
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: 3 <= 2 x <= 9
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Ranged constraint with several terms after a coefficient
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: 3 <= 2 x + x <= 9
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Ranged constraint with a negative lower bound and a coefficient
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: -3 <= 2 x <= 9
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Reversed ranged constraint
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: 10 >= x - y >= 2
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Ranged constraint with infinite bounds
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: -inf <= x + y <= +inf
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (infinity)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (infinity)))
+  (end_marker))
+
+================================================================================
+Ranged constraint over several lines
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: -4 <= x
+   + 2 y
+   - 3 z
+   <= 5
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Ranged constraints in sequence
+================================================================================
+Minimize
+ obj: x
+Subject To
+ a: 1 <= 2 x <= 3
+ b: -1 <= y + 2 z <= 4
+ 5 <= 3 x - y <= 6
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Ranged constraint between standard constraints
+================================================================================
+Minimize
+ obj: x
+Subject To
+ a: x >= 1
+ c: 3 <= 2 x + y <= 9
+ d: - y <= 4
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Ranged constraints in lazy constraints and user cuts
+================================================================================
+Minimize
+ obj: x
+Subject To
+ a: x >= 1
+Lazy Constraints
+ l: 3 <= 2 x <= 9
+User Cuts
+ u: -3 <= 2 y + x <= 9
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (lazy_constraints_section
+    (lazy_constraints_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (user_cuts_section
+    (user_cuts_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Constant-only flipped constraint at any position
+================================================================================
+Minimize
+ obj: x
+Subject To
+ a: -3 >= 3
+ b: x >= 1
+ c: -3 >= 3
+ d: -3 >= 3
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number))))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number))))
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)))))
+  (end_marker))
+
+================================================================================
+Flipped constraint ending in a constant before a named constraint
+================================================================================
+Minimize
+ obj: x
+Subject To
+ f: 3 <= x + 2
+ g: y >= 1
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number))))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Flipped constraint before an unsigned unnamed constraint
+================================================================================
+Minimize
+ obj: x
+Subject To
+ f: 3 >= 2 x
+ y >= 1
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier))))
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Signed row after a flipped constraint continues its expression
+================================================================================
+Minimize
+ obj: x
+Subject To
+ f: 3 >= x
+ - y >= 2
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Standard constraint before a signed flipped constraint
+================================================================================
+Minimize
+ obj: x
+Subject To
+ x <= 5
+ - 3 <= y
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier)))))
+  (end_marker))
+
+================================================================================
+Constant sum as the lower side of a flipped constraint
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: 3 + 4 <= x
+ d: 3 + x <= 5
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Mixed operator directions still group as one range (a semantic error upstream)
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: 2 <= x >= 10
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Indicator with a flipped constraint
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c: b = 1 -> 3 <= x + y
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (indicator
+        (identifier)
+        (number))
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (end_marker))
+
+================================================================================
+Constraint name before a comment and colon
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c1 \* note *\ : 3 <= 2 x <= 9
+ c2
+ :: 3 <= 2 y
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (block_comment)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier)))))
+  (end_marker))
