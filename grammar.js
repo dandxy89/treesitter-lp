@@ -50,14 +50,20 @@ export default grammar({
     $.end_marker,
     $._genconstrs_keyword,
     $.block_comment,
+    $._constraint_name,
+    // In no rule, so valid only during error recovery.
+    $._error_sentinel,
   ],
 
+  // Constraints are parsed deterministically, as upstream groups them (see
+  // `_constraint_body`); only `b = 1 ->` (indicator or equality) and a body
+  // opening with `3 + ...` (constant lower bound or standard left-hand side)
+  // need a token or two of extra lookahead.
   conflicts: ($) => [
     [$.term],
-    [$.linear_expression],
-    [$.indicator, $.term],
-    [$._numeric_value, $.term],
     [$.named_objective],
+    [$.indicator, $._variable_term],
+    [$._lhs_constant, $._constant_bound],
   ],
 
   rules: {
@@ -107,7 +113,8 @@ export default grammar({
 
     _numeric_value: ($) => seq(optional(sign()), constant($)),
 
-    // A variable with an optional coefficient, or a bare constant.
+    // Objective term: a variable with an optional coefficient, or a bare
+    // constant. Constraints build the same `term` nodes from their own rules.
     term: ($) => choice(seq(optional(constant($)), $.identifier), constant($)),
 
     linear_expression: ($) => signed($._expression_item),
@@ -152,11 +159,22 @@ export default grammar({
 
     constraints_section: ($) => seq($.subject_to_keyword, repeat($.constraint)),
 
+    // The name is an external token: an identifier followed by `:` or `::`
+    // (src/scanner.c), so a constant ending one constraint's expression is
+    // told apart from the coefficient of a variable by one token. During
+    // error recovery the scanner lexes no names, and a name is an identifier
+    // followed by `:`, so recovery can resume at a named constraint.
     constraint: ($) =>
       seq(
         optional(
           seq(
-            field("name", alias($.identifier, $.constraint_name)),
+            field(
+              "name",
+              alias(
+                choice($._constraint_name, $.identifier),
+                $.constraint_name,
+              ),
+            ),
             choice(":", "::"),
           ),
         ),
@@ -167,18 +185,60 @@ export default grammar({
     // Indicator head: `b = 1 ->`
     indicator: ($) => seq($.identifier, "=", $.number, "->"),
 
+    // Mirrors upstream `assemble_constraints` (lp_parser_rs
+    // `rust/src/assemble.rs`), which reads an entry greedily:
+    // - a left-hand side that mentions a variable is standard, `expr op rhs`,
+    //   with a single signed number on the right;
+    // - a left-hand side of constants only is flipped, `lo op expr`, or,
+    //   when another operator follows the (longest) expression, ranged,
+    //   `lo op expr op hi`. Upstream rejects a range whose operators point
+    //   different ways; that is a semantic check, not a grouping one.
     _constraint_body: ($) =>
       choice(
-        // Standard: `expr op rhs`
-        seq($.linear_expression, $.comparison_operator, $._numeric_value),
-        // Flipped `10 >= expr` or ranged `2 <= expr <= 10`
         seq(
-          $._numeric_value,
+          alias($._standard_lhs, $.linear_expression),
           $.comparison_operator,
-          $.linear_expression,
+          $._numeric_value,
+        ),
+        seq(
+          $._constant_bound,
+          $.comparison_operator,
+          alias($._constraint_expression, $.linear_expression),
           optional(seq($.comparison_operator, $._numeric_value)),
         ),
       ),
+
+    // A left-hand side with at least one variable term or quadratic block.
+    _standard_lhs: ($) =>
+      seq(
+        optional(sign()),
+        repeat(seq(alias($._lhs_constant, $.term), sign())),
+        choice(alias($._variable_term, $.term), $.quadratic_block),
+        repeat(seq(sign(), $._constraint_item)),
+      ),
+
+    _lhs_constant: ($) => constant($),
+
+    // Constants only: `-4`, or (folded upstream) `2 + 3`.
+    _constant_bound: ($) =>
+      seq(optional(sign()), constant($), repeat(seq(sign(), constant($)))),
+
+    // The expression of a flipped or ranged constraint extends as far as it
+    // can: a sign continues it (prec.right) and a number followed by a
+    // variable is that variable's coefficient (the negative precedence of
+    // `_constant_term`), so `3 <= 2 x + y <= 9` is one ranged constraint.
+    _constraint_expression: ($) => prec.right(signed($._constraint_item)),
+
+    _constraint_item: ($) =>
+      choice(
+        alias($._variable_term, $.term),
+        alias($._constant_term, $.term),
+        $.quadratic_block,
+      ),
+
+    _variable_term: ($) => seq(optional(constant($)), $.identifier),
+
+    _constant_term: ($) => prec(-1, constant($)),
 
     _any_section: ($) =>
       choice(
