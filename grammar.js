@@ -60,7 +60,6 @@ export default grammar({
   // opening with `3 + ...` (constant lower bound or standard left-hand side)
   // need a token or two of extra lookahead.
   conflicts: ($) => [
-    [$.term],
     [$.named_objective],
     [$.indicator, $._variable_term],
     [$._lhs_constant, $._constant_bound],
@@ -115,7 +114,11 @@ export default grammar({
 
     // Objective term: a variable with an optional coefficient, or a bare
     // constant. Constraints build the same `term` nodes from their own rules.
-    term: ($) => choice(seq(optional(constant($)), $.identifier), constant($)),
+    // A number followed by an identifier is always its coefficient (the
+    // negative precedence); a following objective's name is the external
+    // name token, so the parser never forks here.
+    term: ($) =>
+      choice(seq(optional(constant($)), $.identifier), prec(-1, constant($))),
 
     linear_expression: ($) => signed($._expression_item),
 
@@ -141,9 +144,13 @@ export default grammar({
         repeat1($.named_objective),
       ),
 
+    // The name is lexed like a constraint name (see `constraint`).
     named_objective: ($) =>
       seq(
-        field("name", alias($.identifier, $.objective_name)),
+        field(
+          "name",
+          alias(choice($._constraint_name, $.identifier), $.objective_name),
+        ),
         ":",
         repeat($.objective_attribute),
         optional($.linear_expression),

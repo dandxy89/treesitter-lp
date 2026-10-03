@@ -8,11 +8,11 @@
 // `general constraints`) are always keywords and stay regex tokens in
 // grammar.js. Keep KEYWORDS in sync with the upstream Logos regexes.
 //
-// Constraint names are lexed here too: an identifier is a name only when a
-// `:` or `::` follows it (after whitespace or comments), which the parse
-// table cannot see one token ahead. After a number in a flipped or ranged
-// constraint's expression this decides whether the number ends it (`c2:`
-// names the next constraint) or is the coefficient of a variable.
+// Constraint and objective names are lexed here too: an identifier is a name
+// only when a `:` or `::` follows it (after whitespace or comments), which the
+// parse table cannot see one token ahead. After a number in an objective or in
+// a flipped or ranged constraint's expression this decides whether the number
+// ends it (`c2:` names the next one) or is the coefficient of a variable.
 //
 // Block comments are lexed here too, so a line break before a comment still
 // counts for a keyword after it on the same line (`\* note *\ Bounds`), as
@@ -158,6 +158,12 @@ static bool is_infinity(const char *word, unsigned len) {
     return (len == 3 && memcmp(word, "inf", 3) == 0) || (len == 8 && memcmp(word, "infinity", 8) == 0);
 }
 
+// `st:` / `s.t.:` lex as the `Subject To` header upstream (its regex takes
+// the colon), never as a name.
+static bool is_subject_to(const char *word, unsigned len) {
+    return (len == 2 && memcmp(word, "st", 2) == 0) || (len == 4 && memcmp(word, "s.t.", 4) == 0);
+}
+
 // Skip the rest of a block comment after its opening `\*`; false at EOF.
 static bool skip_block_comment_body(TSLexer *lexer) {
     lexer->advance(lexer, false);
@@ -261,7 +267,7 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
             return true;
         }
     }
-    if (!name_valid || is_infinity(word, len)) return false;
+    if (!name_valid || is_infinity(word, len) || is_subject_to(word, len)) return false;
 
     // Skip whitespace and comments, as upstream does between a name and `:`.
     for (;;) {
