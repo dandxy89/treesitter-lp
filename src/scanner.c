@@ -106,6 +106,10 @@ static bool is_id_after_gt(int32_t c) {
     return is_letter(c) || (c != 0 && c < 128 && strchr("_!#$%&(),;?@{}~'|[]", (int)c) != NULL);
 }
 
+static bool is_blank(int32_t c) { return c == ' ' || c == '\t'; }
+
+static bool is_space(int32_t c) { return is_blank(c) || c == '\r' || c == '\n'; }
+
 static int32_t to_lower(int32_t c) { return (c >= 'A' && c <= 'Z') ? c + ('a' - 'A') : c; }
 
 // Whether `first` and the next same-line word form the multi-word
@@ -115,8 +119,8 @@ static int32_t to_lower(int32_t c) { return (c >= 'A' && c <= 'Z') ? c + ('a' - 
 static bool follows_constraints_word(TSLexer *lexer, const char *first) {
     const char *prefix = strcmp(first, "gen") == 0 ? "cons" : strcmp(first, "general") == 0 ? "constr" : NULL;
     if (prefix == NULL) return false;
-    if (lexer->lookahead != ' ' && lexer->lookahead != '\t') return false;
-    while (lexer->lookahead == ' ' || lexer->lookahead == '\t') lexer->advance(lexer, false);
+    if (!is_blank(lexer->lookahead)) return false;
+    while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
     for (const char *p = prefix; *p != '\0'; p++) {
         if (to_lower(lexer->lookahead) != *p) return false;
         lexer->advance(lexer, false);
@@ -146,7 +150,7 @@ static int scan_keyword(TSLexer *lexer, const char *word, unsigned len, const bo
 
         // `gen cons` / `general constraints` belong to the regex token.
         if (token == GENERALS_KEYWORD && follows_constraints_word(lexer, text)) return REJECTED;
-        while (lexer->lookahead == ' ' || lexer->lookahead == '\t') lexer->advance(lexer, false);
+        while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
         if (lexer->lookahead == ':') return NOT_KEYWORD;
         return (int)token;
     }
@@ -164,9 +168,10 @@ static bool is_subject_to(const char *word, unsigned len) {
     return (len == 2 && memcmp(word, "st", 2) == 0) || (len == 4 && memcmp(word, "s.t.", 4) == 0);
 }
 
-// Skip the rest of a block comment after its opening `\*`; false at EOF.
-static bool skip_block_comment_body(TSLexer *lexer) {
-    lexer->advance(lexer, false);
+// Skip the rest of a block comment after its opening `\*`, up to and
+// including the first `*\`; false at EOF. Sets `*saw_newline` (when given) on
+// a line break inside it.
+static bool skip_block_comment_body(TSLexer *lexer, bool *saw_newline) {
     for (;;) {
         if (lexer->eof(lexer)) return false;
         if (lexer->lookahead == '*') {
@@ -177,6 +182,7 @@ static bool skip_block_comment_body(TSLexer *lexer) {
             }
             continue;
         }
+        if (lexer->lookahead == '\n' && saw_newline != NULL) *saw_newline = true;
         lexer->advance(lexer, false);
     }
 }
@@ -186,8 +192,7 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
     bool at_line_start = scanner->newline_pending && lexer->get_column(lexer) == scanner->column;
     scanner->newline_pending = false;
 
-    while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' ||
-           lexer->lookahead == '\n') {
+    while (is_space(lexer->lookahead)) {
         if (lexer->lookahead == '\n') at_line_start = true;
         lexer->advance(lexer, true);
     }
@@ -199,17 +204,7 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
         lexer->advance(lexer, false);
         if (lexer->lookahead != '*') return false;
         lexer->advance(lexer, false);
-        for (;;) {
-            if (lexer->eof(lexer)) return false;
-            if (lexer->lookahead == '*') {
-                while (lexer->lookahead == '*') lexer->advance(lexer, false);
-                if (lexer->lookahead == '\\') break;
-                continue;
-            }
-            if (lexer->lookahead == '\n') at_line_start = true;
-            lexer->advance(lexer, false);
-        }
-        lexer->advance(lexer, false);
+        if (!skip_block_comment_body(lexer, &at_line_start)) return false;
         scanner->newline_pending = at_line_start;
         scanner->column = lexer->get_column(lexer);
         lexer->result_symbol = BLOCK_COMMENT;
@@ -271,14 +266,14 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
 
     // Skip whitespace and comments, as upstream does between a name and `:`.
     for (;;) {
-        while (lexer->lookahead == ' ' || lexer->lookahead == '\t' || lexer->lookahead == '\r' ||
-               lexer->lookahead == '\n') {
+        while (is_space(lexer->lookahead)) {
             lexer->advance(lexer, false);
         }
         if (lexer->lookahead != '\\') break;
         lexer->advance(lexer, false);
         if (lexer->lookahead == '*') {
-            if (!skip_block_comment_body(lexer)) return false;
+            lexer->advance(lexer, false);
+            if (!skip_block_comment_body(lexer, NULL)) return false;
         } else {
             while (lexer->lookahead != '\n' && !lexer->eof(lexer)) lexer->advance(lexer, false);
         }

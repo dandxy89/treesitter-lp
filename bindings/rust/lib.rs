@@ -31,6 +31,8 @@ extern "C" {
 /// The tree-sitter [`LanguageFn`] for this grammar.
 ///
 /// Convert it with `.into()` to get a `tree_sitter::Language`.
+// SAFETY: `tree_sitter_lp` is the generated parser's entry point; it takes no
+// arguments and returns a pointer to a static `TSLanguage`.
 pub const LANGUAGE: LanguageFn = unsafe { LanguageFn::from_raw(tree_sitter_lp) };
 
 /// The content of the [`node-types.json`] file for this grammar.
@@ -58,6 +60,18 @@ mod tests {
         parser
             .set_language(&super::LANGUAGE.into())
             .expect("Error loading LP parser");
+    }
+
+    #[test]
+    fn test_parses_minimal_problem() {
+        let mut parser = tree_sitter::Parser::new();
+        parser
+            .set_language(&super::LANGUAGE.into())
+            .expect("Error loading LP parser");
+        let tree = parser
+            .parse("min\n x\nsubject to\n c1: x >= 0\nend\n", None)
+            .expect("parse returned no tree");
+        assert!(!tree.root_node().has_error());
     }
 
     #[test]
