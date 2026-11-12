@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "tree-sitter": "^0.25.1",
-    "tree-sitter-cli": "^0.27.0"
+    "tree-sitter-cli": "^0.27.1"
   },
   "scripts": {
     "build": "tree-sitter generate",
