@@ -35,6 +35,7 @@ enum TokenType {
     GENCONSTRS_KEYWORD,
     BLOCK_COMMENT,
     CONSTRAINT_NAME,
+    ST_KEYWORD,
     ERROR_SENTINEL,
 };
 
@@ -65,11 +66,15 @@ static const struct {
 #define WORD_MAX 16
 
 // State carried from a block comment to the token right after it: whether a
-// line break came before or inside the comment, and the column it ended at
-// (so the flag cannot leak to a later token on the same line).
+// line break came before or inside the comment, the column it ended at and
+// the first character after it. Tree-sitter keeps this state across tokens
+// the scanner does not lex, so the flag applies only to a token that starts
+// at that column with that character (not, say, a later token that happens
+// to sit at the same column of another line).
 typedef struct {
     bool newline_pending;
     uint32_t column;
+    int32_t first;
 } Scanner;
 
 void *tree_sitter_lp_external_scanner_create(void) {
@@ -162,8 +167,8 @@ static bool is_infinity(const char *word, unsigned len) {
     return (len == 3 && memcmp(word, "inf", 3) == 0) || (len == 8 && memcmp(word, "infinity", 8) == 0);
 }
 
-// `st:` / `s.t.:` lex as the `Subject To` header upstream (its regex takes
-// the colon), never as a name.
+// `st` / `s.t.` are the `Subject To` header only as the first token of a
+// line (upstream `resolve_keyword`); elsewhere they are names.
 static bool is_subject_to(const char *word, unsigned len) {
     return (len == 2 && memcmp(word, "st", 2) == 0) || (len == 4 && memcmp(word, "s.t.", 4) == 0);
 }
@@ -189,13 +194,15 @@ static bool skip_block_comment_body(TSLexer *lexer, bool *saw_newline) {
 
 bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     Scanner *scanner = payload;
-    bool at_line_start = scanner->newline_pending && lexer->get_column(lexer) == scanner->column;
+    bool carried = scanner->newline_pending && lexer->get_column(lexer) == scanner->column;
+    bool at_line_start = false;
     scanner->newline_pending = false;
 
     while (is_space(lexer->lookahead)) {
         if (lexer->lookahead == '\n') at_line_start = true;
         lexer->advance(lexer, true);
     }
+    if (carried && to_lower(lexer->lookahead) == scanner->first) at_line_start = true;
 
     // `\*` ... `*\` (the upstream regex: ends at the first `*\`). A lone `\`
     // starts a line comment, left to the regex token.
@@ -205,9 +212,13 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
         if (lexer->lookahead != '*') return false;
         lexer->advance(lexer, false);
         if (!skip_block_comment_body(lexer, &at_line_start)) return false;
-        scanner->newline_pending = at_line_start;
         scanner->column = lexer->get_column(lexer);
         lexer->result_symbol = BLOCK_COMMENT;
+        lexer->mark_end(lexer);
+        // Only a word or another comment on the same line can use the flag.
+        while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
+        scanner->first = to_lower(lexer->lookahead);
+        scanner->newline_pending = at_line_start && (is_id_first(lexer->lookahead) || lexer->lookahead == '\\');
         return true;
     }
     // No names during error recovery (every symbol valid): there the grammar
@@ -262,7 +273,17 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
             return true;
         }
     }
-    if (!name_valid || is_infinity(word, len) || is_subject_to(word, len)) return false;
+    if (at_line_start && valid_symbols[ST_KEYWORD] && is_subject_to(word, len)) {
+        // The optional same-line `:` belongs to the header; `::` does not.
+        while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
+        if (lexer->lookahead == ':') {
+            lexer->advance(lexer, false);
+            if (lexer->lookahead != ':') lexer->mark_end(lexer);
+        }
+        lexer->result_symbol = ST_KEYWORD;
+        return true;
+    }
+    if (!name_valid || is_infinity(word, len)) return false;
 
     // Skip whitespace and comments, as upstream does between a name and `:`.
     for (;;) {

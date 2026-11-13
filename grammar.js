@@ -51,6 +51,7 @@ export default grammar({
     $._genconstrs_keyword,
     $.block_comment,
     $._constraint_name,
+    $._st_keyword,
     // In no rule, so valid only during error recovery.
     $._error_sentinel,
   ],
@@ -82,9 +83,11 @@ export default grammar({
 
     multi_objectives_keyword: (_) => token(/multi-objectives?/i),
 
-    // The upstream lexer consumes an optional same-line `:` after the header.
+    // Multi-word forms only, always keywords; `st` / `s.t.` come from the
+    // scanner (line start only). The upstream lexer consumes an optional
+    // same-line `:` after the header.
     subject_to_keyword: (_) =>
-      token(/(subject[ \t]+to|such[ \t]+that|s\.t\.|st)([ \t]*:)?/i),
+      token(/(subject[ \t]+to|such[ \t]+that)([ \t]*:)?/i),
 
     lazy_constraints_keyword: (_) => token(/lazy[ \t]+constraints/i),
 
@@ -164,7 +167,14 @@ export default grammar({
         $._numeric_value,
       ),
 
-    constraints_section: ($) => seq($.subject_to_keyword, repeat($.constraint)),
+    constraints_section: ($) =>
+      seq(
+        choice(
+          $.subject_to_keyword,
+          alias($._st_keyword, $.subject_to_keyword),
+        ),
+        repeat($.constraint),
+      ),
 
     // The name is an external token: an identifier followed by `:` or `::`
     // (src/scanner.c), so a constant ending one constraint's expression is
@@ -278,7 +288,10 @@ export default grammar({
     general_constraint: ($) =>
       seq(
         optional(
-          seq(field("name", alias($.identifier, $.constraint_name)), ":"),
+          seq(
+            field("name", alias($.identifier, $.constraint_name)),
+            choice(":", "::"),
+          ),
         ),
         field("resultant", $.identifier),
         "=",
@@ -323,13 +336,17 @@ export default grammar({
     _sos_item: ($) => choice($.sos_constraint_header, $.sos_entry),
 
     // `s1: S1 ::` opens an SOS set; the `name: weight` entries that follow
-    // belong to it.
+    // belong to it. CPLEX also allows it unnamed, `S1 ::`, where the type is
+    // an ordinary identifier (upstream checks it is `S1` or `S2`).
     sos_constraint_header: ($) =>
-      seq(
-        field("name", alias($.identifier, $.sos_name)),
-        ":",
-        $.sos_type,
-        "::",
+      choice(
+        seq(
+          field("name", alias($.identifier, $.sos_name)),
+          ":",
+          $.sos_type,
+          "::",
+        ),
+        seq(alias($.identifier, $.sos_type), "::"),
       ),
 
     sos_entry: ($) => seq($.identifier, ":", $._numeric_value),

@@ -238,3 +238,95 @@ end
       function: (function_name)
       (identifier)))
   (end_marker))
+
+================================================================================
+st mid-line is a variable
+================================================================================
+min
+obj: 3 x + 2 st
+subject to
+c1: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+s.t. mid-line is a variable
+================================================================================
+min
+obj: - x1 + 2 s.t.
+st
+c1: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+st is a constraint name after the header
+================================================================================
+min
+x
+st
+st: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))

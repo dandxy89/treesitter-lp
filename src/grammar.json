@@ -78,7 +78,7 @@
       "type": "TOKEN",
       "content": {
         "type": "PATTERN",
-        "value": "(subject[ \\t]+to|such[ \\t]+that|s\\.t\\.|st)([ \\t]*:)?",
+        "value": "(subject[ \\t]+to|such[ \\t]+that)([ \\t]*:)?",
         "flags": "i"
       }
     },
@@ -592,8 +592,22 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "subject_to_keyword"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "subject_to_keyword"
+            },
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "_st_keyword"
+              },
+              "named": true,
+              "value": "subject_to_keyword"
+            }
+          ]
         },
         {
           "type": "REPEAT",
@@ -1208,8 +1222,17 @@
                   }
                 },
                 {
-                  "type": "STRING",
-                  "value": ":"
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "::"
+                    }
+                  ]
                 }
               ]
             },
@@ -1470,32 +1493,55 @@
       ]
     },
     "sos_constraint_header": {
-      "type": "SEQ",
+      "type": "CHOICE",
       "members": [
         {
-          "type": "FIELD",
-          "name": "name",
-          "content": {
-            "type": "ALIAS",
-            "content": {
-              "type": "SYMBOL",
-              "name": "identifier"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "name",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                },
+                "named": true,
+                "value": "sos_name"
+              }
             },
-            "named": true,
-            "value": "sos_name"
-          }
+            {
+              "type": "STRING",
+              "value": ":"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "sos_type"
+            },
+            {
+              "type": "STRING",
+              "value": "::"
+            }
+          ]
         },
         {
-          "type": "STRING",
-          "value": ":"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "sos_type"
-        },
-        {
-          "type": "STRING",
-          "value": "::"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              "named": true,
+              "value": "sos_type"
+            },
+            {
+              "type": "STRING",
+              "value": "::"
+            }
+          ]
         }
       ]
     },
@@ -1585,6 +1631,10 @@
     {
       "type": "SYMBOL",
       "name": "_constraint_name"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "_st_keyword"
     },
     {
       "type": "SYMBOL",

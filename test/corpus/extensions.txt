@@ -353,3 +353,39 @@ End
       (comparison_operator)
       (number)))
   (end_marker))
+
+================================================================================
+General constraint with a double-colon name
+================================================================================
+min
+x
+st
+c1: x >= 1
+general constraints
+g1:: r = ABS ( x )
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (general_constraints_section
+    (general_constraints_keyword)
+    (general_constraint
+      name: (constraint_name)
+      resultant: (identifier)
+      function: (function_name)
+      (identifier)))
+  (end_marker))
