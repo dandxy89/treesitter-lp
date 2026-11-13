@@ -1,6 +1,7 @@
 {
   "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "lp",
+  "word": "identifier",
   "rules": {
     "source_file": {
       "type": "SEQ",
@@ -63,14 +64,6 @@
       "content": {
         "type": "PATTERN",
         "value": "minimi[sz]e|minimum|min|maximi[sz]e|maximum|max",
-        "flags": "i"
-      }
-    },
-    "multi_objectives_keyword": {
-      "type": "TOKEN",
-      "content": {
-        "type": "PATTERN",
-        "value": "multi-objectives?",
         "flags": "i"
       }
     },
@@ -1635,6 +1628,10 @@
     {
       "type": "SYMBOL",
       "name": "_st_keyword"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "multi_objectives_keyword"
     },
     {
       "type": "SYMBOL",

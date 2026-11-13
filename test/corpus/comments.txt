@@ -116,3 +116,70 @@ end
       (comparison_operator)
       (number)))
   (end_marker))
+
+================================================================================
+Block comment line break does not leak to a later keyword at the same column
+================================================================================
+min
+ x
+st
+ x >= 1
+generals
+ \* a
+ b *\ s1
+  x y semi z
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (block_comment)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Block comment line break carries to multi-objectives
+================================================================================
+min
+\* a *\ multi-objectives: x
+st
+ x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (block_comment)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))

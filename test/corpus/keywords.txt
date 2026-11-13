@@ -330,3 +330,171 @@ end
       (comparison_operator)
       (number)))
   (end_marker))
+
+================================================================================
+multi-objectives on the line after the sense is a variable
+================================================================================
+min
+multi-objectives
+st
+ x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+multi-objectives directly before a sign
+================================================================================
+max multi-objective- 2 x
+ obj: Priority=1 y
+st
+ x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (multi_objectives_keyword)
+  (objectives_section
+    (linear_expression
+      (term
+        (number)
+        (identifier)))
+    (named_objective
+      (objective_name)
+      (objective_attribute
+        (attribute_name)
+        (number))
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Keyword label with a block comment before the colon
+================================================================================
+min
+ x
+st
+ end \* last *\ : x >= 1
+ bounds \* a *\ \* b *\ :: x <= 3
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (block_comment)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (block_comment)
+      (block_comment)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Keyword continued by > is a name
+================================================================================
+min
+ x
+st
+ x >= 1
+generals
+ x
+ end>x
+ bin>y
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Keyword directly before a sign
+================================================================================
+min
+ x
+st
+ x >= 1
+bounds- 3 <= x
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)))
+  (end_marker))

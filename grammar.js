@@ -7,7 +7,8 @@
  * Derived from lp_parser_rs (https://github.com/dandxy89/lp_parser_rs),
  * MIT OR Apache-2.0: its Logos lexer (`rust/src/lexer.rs`) and LALRPOP
  * grammar (`rust/src/lp.lalrpop`) are the reference. Last synced with
- * commit 43b756b (branch `fix/improvements`).
+ * lp_parser_rs 5.0.2; the differential test (`cargo test differential`)
+ * compares the two on generated files.
  */
 
 /// <reference types="tree-sitter-cli/dsl" />
@@ -36,10 +37,15 @@ const constant = ($) => choice($.number, $.infinity);
 export default grammar({
   name: "lp",
 
+  // Keywords that are also names (`min`, `free`) match whole words only, so
+  // a misspelt `maximze` is an error rather than `max` and a variable `imze`.
+  word: ($) => $.identifier,
+
   extras: ($) => [/[ \t\r\n]/, $.line_comment, $.block_comment],
 
-  // Single-word section keywords are line-start sensitive, and block comments
-  // carry line starts across them (src/scanner.c).
+  // Single-word section keywords are line-start sensitive, `multi-objectives`
+  // is a keyword only on the sense's line, and block comments carry line
+  // starts across them (src/scanner.c).
   externals: ($) => [
     $.bounds_keyword,
     $.generals_keyword,
@@ -52,6 +58,7 @@ export default grammar({
     $.block_comment,
     $._constraint_name,
     $._st_keyword,
+    $.multi_objectives_keyword,
     // In no rule, so valid only during error recovery.
     $._error_sentinel,
   ],
@@ -80,8 +87,6 @@ export default grammar({
       ),
 
     sense: (_) => token(/minimi[sz]e|minimum|min|maximi[sz]e|maximum|max/i),
-
-    multi_objectives_keyword: (_) => token(/multi-objectives?/i),
 
     // Multi-word forms only, always keywords; `st` / `s.t.` come from the
     // scanner (line start only). The upstream lexer consumes an optional
