@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-lp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tree-sitter grammar for LP (Linear Programming) files",
   "main": "bindings/node",
   "keywords": [

@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-lp"
 description = "Tree-sitter grammar for LP (Linear Programming) files"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Dan"]
 license = "MIT OR Apache-2.0"
 readme = "README.md"
