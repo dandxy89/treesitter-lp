@@ -44,6 +44,7 @@ npm install              # install dependencies
 npm run build            # regenerate src/parser.c from grammar.js
 npm test                 # run the corpus tests in test/corpus/
 npm run parse -- FILE    # print the syntax tree for an .lp file
+cargo test               # Rust binding tests, including the differential test against lp_parser_rs
 npx prettier@3 --write grammar.js  # format grammar.js
 ```
 
@@ -95,7 +96,7 @@ The Node.js (`tree-sitter-lp`) and Python (`tree_sitter_lp`) packages expose the
 
 ## Acknowledgements
 
-The grammar follows the LP dialect of [lp_parser_rs](https://github.com/dandxy89/lp_parser_rs) (MIT OR Apache-2.0): its Logos lexer and LALRPOP grammar are the reference for tokens, keyword rules and section structure. `grammar.js` records the upstream commit it was last synced with.
+The grammar follows the LP dialect of [lp_parser_rs](https://github.com/dandxy89/lp_parser_rs) (MIT OR Apache-2.0): its Logos lexer and LALRPOP grammar are the reference for tokens, keyword rules and section structure. `grammar.js` records the upstream version it was last synced with, and `cargo test` compares the two parsers on generated files.
 
 ## Licence
 

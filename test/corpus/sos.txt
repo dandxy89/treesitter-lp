@@ -77,3 +77,48 @@ end
       (identifier)
       (number)))
   (end_marker))
+
+================================================================================
+Unnamed SOS headers (CPLEX)
+================================================================================
+min
+x
+st
+c1: x >= 1
+sos
+S1:: a:1 b:2
+s2:: c:1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (linear_expression
+      (term
+        (identifier))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_constraint_header
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))

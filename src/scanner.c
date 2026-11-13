@@ -1,4 +1,4 @@
-// External scanner for single-word section keywords.
+// External scanner for the line-sensitive keywords, names and block comments.
 //
 // Mirrors `Lexer::resolve_keyword` in lp_parser_rs: `bounds`, `generals`,
 // `bin`, `end`, ... are keywords only as the first token of a line and when
@@ -13,6 +13,9 @@
 // parse table cannot see one token ahead. After a number in an objective or in
 // a flipped or ranged constraint's expression this decides whether the number
 // ends it (`c2:` names the next one) or is the coefficient of a variable.
+//
+// `multi-objectives` is lexed here as well: it is the Gurobi marker only on
+// the sense keyword's line, and a name on a later line.
 //
 // Block comments are lexed here too, so a line break before a comment still
 // counts for a keyword after it on the same line (`\* note *\ Bounds`), as
@@ -35,6 +38,8 @@ enum TokenType {
     GENCONSTRS_KEYWORD,
     BLOCK_COMMENT,
     CONSTRAINT_NAME,
+    ST_KEYWORD,
+    MULTI_OBJECTIVES_KEYWORD,
     ERROR_SENTINEL,
 };
 
@@ -61,15 +66,30 @@ static const struct {
     {"genconstrs", GENCONSTRS_KEYWORD},
 };
 
-// Longest keyword is "semi-continuous" (15); anything longer is a name.
-#define WORD_MAX 16
+// Longest keyword is "multi-objectives" (16); anything longer is a name.
+#define WORD_MAX 17
 
-// State carried from a block comment to the token right after it: whether a
-// line break came before or inside the comment, and the column it ended at
-// (so the flag cannot leak to a later token on the same line).
+// What a block comment tells the token right after it, when a line break
+// came before or inside the comment.
+enum Carry {
+    CARRY_NONE,
+    // The keyword `word` (`length` 0: another block comment) follows on the
+    // comment's line and starts a line.
+    CARRY_LINE_START,
+    // `multi-objectives` follows: at a line start it is a name.
+    CARRY_NO_MULTI_OBJECTIVES,
+};
+
+// Tree-sitter restores this state before every call until the scanner lexes
+// another token. CARRY_LINE_START is therefore set only when the next call,
+// which sees the same text in the same parse state, is sure to lex that
+// keyword or comment and so replace the state; `word` guards against it ever
+// applying to another token. A stale CARRY_NO_MULTI_OBJECTIVES is harmless:
+// the marker is valid only right after the sense keyword.
 typedef struct {
-    bool newline_pending;
-    uint32_t column;
+    uint8_t carry;
+    uint8_t length;
+    char word[WORD_MAX];
 } Scanner;
 
 void *tree_sitter_lp_external_scanner_create(void) {
@@ -87,7 +107,7 @@ void tree_sitter_lp_external_scanner_deserialize(void *payload, const char *buff
     if (length == sizeof(Scanner)) {
         memcpy(payload, buffer, sizeof(Scanner));
     } else {
-        *(Scanner *)payload = (Scanner){0};
+        memset(payload, 0, sizeof(Scanner));
     }
 }
 
@@ -112,60 +132,46 @@ static bool is_space(int32_t c) { return is_blank(c) || c == '\r' || c == '\n'; 
 
 static int32_t to_lower(int32_t c) { return (c >= 'A' && c <= 'Z') ? c + ('a' - 'A') : c; }
 
-// Whether `first` and the next same-line word form the multi-word
-// `general constraints` token (`general constr...` or `gen cons...`), which
-// the regex token then matches instead. Like the upstream lexer's longest
-// match, only a prefix of the second word is needed.
-static bool follows_constraints_word(TSLexer *lexer, const char *first) {
-    const char *prefix = strcmp(first, "gen") == 0 ? "cons" : strcmp(first, "general") == 0 ? "constr" : NULL;
-    if (prefix == NULL) return false;
-    if (!is_blank(lexer->lookahead)) return false;
-    while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
+// Lex a word as IDENTIFIER_RE does: its first WORD_MAX characters go to
+// `word` in lowercase and its full length is returned (0: no word here).
+// `mark` marks the token end at the end of the word. A `-` or `>` continues a
+// name only before certain characters, so the lexer may end one character
+// past the word (`x- 3`, `y>=3`), which sets `*past_end`.
+static unsigned read_word(TSLexer *lexer, char *word, bool mark, bool *past_end) {
+    unsigned len = 0;
+    *past_end = false;
+    if (!is_id_first(lexer->lookahead)) return 0;
+    for (;;) {
+        int32_t c = lexer->lookahead;
+        if (is_id_cont(c)) {
+            lexer->advance(lexer, false);
+        } else {
+            if (mark) lexer->mark_end(lexer);
+            if (c != '-' && c != '>') return len;
+            lexer->advance(lexer, false);
+            if (c == '-' ? !is_id_cont(lexer->lookahead) : !is_id_after_gt(lexer->lookahead)) {
+                *past_end = true;
+                return len;
+            }
+        }
+        if (len < WORD_MAX) word[len] = (char)to_lower(c);
+        len++;
+    }
+}
+
+// Whether the word at the lexer completes the multi-word `general
+// constraints` token after `gen` / `general` (`first_len` 3 / 7): `gen
+// cons...` or `general constr...`, which the regex token then matches
+// instead. Like the upstream lexer's longest match, only a prefix of the
+// second word is needed.
+static bool continues_general_constraints(TSLexer *lexer, unsigned first_len) {
+    const char *prefix = first_len == 3 ? "cons" : first_len == 7 ? "constr" : "";
+    if (*prefix == '\0') return false;
     for (const char *p = prefix; *p != '\0'; p++) {
         if (to_lower(lexer->lookahead) != *p) return false;
         lexer->advance(lexer, false);
     }
     return true;
-}
-
-// No keyword: the word may still be a name.
-#define NOT_KEYWORD (-1)
-// A keyword-like word the regex tokens own (`gen cons`): no external token.
-#define REJECTED (-2)
-
-// Look up the lowercase word just lexed (`len` characters, the lexer right
-// after it) as a line-start section keyword. `bounds:` / `end::` is a label,
-// not a section header, and so is not a keyword.
-static int scan_keyword(TSLexer *lexer, const char *word, unsigned len, const bool *valid_symbols) {
-    // Every keyword starts with one of these letters.
-    if (len >= WORD_MAX || strchr("begis", word[0]) == NULL) return NOT_KEYWORD;
-    char text[WORD_MAX];
-    memcpy(text, word, len);
-    text[len] = '\0';
-    for (unsigned i = 0; i < sizeof(KEYWORDS) / sizeof(KEYWORDS[0]); i++) {
-        if (strcmp(text, KEYWORDS[i].word) != 0) continue;
-        enum TokenType token = KEYWORDS[i].token;
-        if (!valid_symbols[token]) return NOT_KEYWORD;
-        lexer->mark_end(lexer);
-
-        // `gen cons` / `general constraints` belong to the regex token.
-        if (token == GENERALS_KEYWORD && follows_constraints_word(lexer, text)) return REJECTED;
-        while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
-        if (lexer->lookahead == ':') return NOT_KEYWORD;
-        return (int)token;
-    }
-    return NOT_KEYWORD;
-}
-
-// `inf` / `infinity` lex as the infinity token upstream, never as a name.
-static bool is_infinity(const char *word, unsigned len) {
-    return (len == 3 && memcmp(word, "inf", 3) == 0) || (len == 8 && memcmp(word, "infinity", 8) == 0);
-}
-
-// `st:` / `s.t.:` lex as the `Subject To` header upstream (its regex takes
-// the colon), never as a name.
-static bool is_subject_to(const char *word, unsigned len) {
-    return (len == 2 && memcmp(word, "st", 2) == 0) || (len == 4 && memcmp(word, "s.t.", 4) == 0);
 }
 
 // Skip the rest of a block comment after its opening `\*`, up to and
@@ -187,10 +193,74 @@ static bool skip_block_comment_body(TSLexer *lexer, bool *saw_newline) {
     }
 }
 
+// Whether the next token on this line is a `:` or `::` (upstream
+// `peek_same_line`): blanks and block comments that stay on the line are
+// skipped, a line comment or a line break ends the line.
+static bool colon_follows_on_line(TSLexer *lexer) {
+    for (;;) {
+        while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
+        if (lexer->lookahead != '\\') return lexer->lookahead == ':';
+        lexer->advance(lexer, false);
+        if (lexer->lookahead != '*') return false;
+        lexer->advance(lexer, false);
+        bool saw_newline = false;
+        if (!skip_block_comment_body(lexer, &saw_newline) || saw_newline) return false;
+    }
+}
+
+// No keyword: the word may still be a name.
+#define NOT_KEYWORD (-1)
+// A keyword-like word the regex tokens own (`gen cons`): no external token.
+#define REJECTED (-2)
+
+// The section keyword the lowercase word spells, or NOT_KEYWORD.
+static int lookup_keyword(const char *word, unsigned len) {
+    // Every keyword starts with one of these letters.
+    if (len == 0 || len >= WORD_MAX || strchr("begis", word[0]) == NULL) return NOT_KEYWORD;
+    for (unsigned i = 0; i < sizeof(KEYWORDS) / sizeof(KEYWORDS[0]); i++) {
+        if (strlen(KEYWORDS[i].word) == len && memcmp(word, KEYWORDS[i].word, len) == 0) return (int)KEYWORDS[i].token;
+    }
+    return NOT_KEYWORD;
+}
+
+// Resolve the word just lexed (the lexer right after it unless `past_end`) as
+// a line-start section keyword. `bounds:` / `end::` is a label, not a section
+// header, and so is not a keyword.
+static int scan_keyword(TSLexer *lexer, const char *word, unsigned len, bool past_end, const bool *valid_symbols) {
+    int token = lookup_keyword(word, len);
+    if (token == NOT_KEYWORD || !valid_symbols[token]) return NOT_KEYWORD;
+    if (past_end) return token;  // `bound- 3 <= x`: an operator follows
+
+    while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
+    // `gen cons` / `general constraints` belong to the regex token.
+    if (token == GENERALS_KEYWORD && to_lower(lexer->lookahead) == 'c') {
+        return continues_general_constraints(lexer, len) ? REJECTED : token;
+    }
+    return colon_follows_on_line(lexer) ? NOT_KEYWORD : token;
+}
+
+// `inf` / `infinity` lex as the infinity token upstream, never as a name.
+static bool is_infinity(const char *word, unsigned len) {
+    return (len == 3 && memcmp(word, "inf", 3) == 0) || (len == 8 && memcmp(word, "infinity", 8) == 0);
+}
+
+// `multi-objectives` is the Gurobi marker only on the sense keyword's line
+// (the parse table makes it valid only right after the sense).
+static bool is_multi_objectives(const char *word, unsigned len) {
+    return (len == 15 || len == 16) && memcmp(word, "multi-objectives", len) == 0;
+}
+
+// `st` / `s.t.` are the `Subject To` header only as the first token of a
+// line (upstream `resolve_keyword`); elsewhere they are names.
+static bool is_subject_to(const char *word, unsigned len) {
+    return (len == 2 && memcmp(word, "st", 2) == 0) || (len == 4 && memcmp(word, "s.t.", 4) == 0);
+}
+
 bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const bool *valid_symbols) {
     Scanner *scanner = payload;
-    bool at_line_start = scanner->newline_pending && lexer->get_column(lexer) == scanner->column;
-    scanner->newline_pending = false;
+    uint8_t carry = scanner->carry;
+    bool at_line_start = false;
+    scanner->carry = CARRY_NONE;
 
     while (is_space(lexer->lookahead)) {
         if (lexer->lookahead == '\n') at_line_start = true;
@@ -201,68 +271,71 @@ bool tree_sitter_lp_external_scanner_scan(void *payload, TSLexer *lexer, const b
     // starts a line comment, left to the regex token.
     if (lexer->lookahead == '\\') {
         if (!valid_symbols[BLOCK_COMMENT]) return false;
+        if (carry == CARRY_LINE_START && scanner->length == 0) at_line_start = true;
         lexer->advance(lexer, false);
         if (lexer->lookahead != '*') return false;
         lexer->advance(lexer, false);
         if (!skip_block_comment_body(lexer, &at_line_start)) return false;
-        scanner->newline_pending = at_line_start;
-        scanner->column = lexer->get_column(lexer);
         lexer->result_symbol = BLOCK_COMMENT;
+        lexer->mark_end(lexer);
+        if (!at_line_start) return true;
+
+        // Decide now what the line start means for the token after the
+        // comment: it is lexed in this same parse state.
+        while (is_blank(lexer->lookahead)) lexer->advance(lexer, false);
+        if (lexer->lookahead == '\\') {
+            lexer->advance(lexer, false);
+            scanner->length = 0;
+            if (lexer->lookahead == '*') scanner->carry = CARRY_LINE_START;
+            return true;
+        }
+        bool past_end;
+        unsigned len = read_word(lexer, scanner->word, false, &past_end);
+        if (len == 0 || len >= WORD_MAX) return true;
+        scanner->length = (uint8_t)len;
+        if (is_multi_objectives(scanner->word, len)) {
+            scanner->carry = CARRY_NO_MULTI_OBJECTIVES;
+        } else if (scan_keyword(lexer, scanner->word, len, past_end, valid_symbols) >= 0 ||
+                   (valid_symbols[ST_KEYWORD] && is_subject_to(scanner->word, len))) {
+            scanner->carry = CARRY_LINE_START;
+        }
         return true;
     }
     // No names during error recovery (every symbol valid): there the grammar
     // accepts an identifier as a name, as before names were lexed here.
     bool name_valid = valid_symbols[CONSTRAINT_NAME] && !valid_symbols[ERROR_SENTINEL];
-    if (!at_line_start && !name_valid) return false;
+    bool multi_valid = valid_symbols[MULTI_OBJECTIVES_KEYWORD] && carry != CARRY_NO_MULTI_OBJECTIVES;
+    if (!at_line_start && carry != CARRY_LINE_START && !name_valid && !multi_valid) return false;
 
-    // Lex a word as IDENTIFIER_RE does, keeping its lowercase spelling for
-    // the keyword lookup. A keyword can only end at `>` or at the first
-    // character that is not part of a name.
-    if (!is_id_first(lexer->lookahead)) return false;
     char word[WORD_MAX];
-    unsigned len = 0;
-    for (;;) {
-        int32_t c = lexer->lookahead;
-        if (is_id_cont(c)) {
-            if (len < WORD_MAX) word[len] = (char)to_lower(c);
-            len++;
-            lexer->advance(lexer, false);
-            continue;
-        }
-        if (c == '-') {
-            lexer->advance(lexer, false);
-            if (!is_id_cont(lexer->lookahead)) return false;  // `x-` : not a name, nor a keyword
-            if (len < WORD_MAX) word[len] = '-';
-            len++;
-            continue;
-        }
-        if (c == '>') {
-            if (at_line_start) {
-                int keyword = scan_keyword(lexer, word, len, valid_symbols);
-                if (keyword >= 0) {
-                    lexer->result_symbol = (TSSymbol)keyword;
-                    return true;
-                }
-            }
-            lexer->advance(lexer, false);
-            if (!is_id_after_gt(lexer->lookahead)) return false;  // `y>=` : the name ends before `>`
-            if (len < WORD_MAX) word[len] = '>';
-            len++;
-            continue;
-        }
-        break;
-    }
-    lexer->mark_end(lexer);
+    bool past_end;
+    unsigned len = read_word(lexer, word, true, &past_end);
+    if (len == 0) return false;
+    if (carry == CARRY_LINE_START && len == scanner->length && memcmp(word, scanner->word, len) == 0) at_line_start = true;
 
+    if (!at_line_start && multi_valid && is_multi_objectives(word, len)) {
+        lexer->result_symbol = MULTI_OBJECTIVES_KEYWORD;
+        return true;
+    }
     if (at_line_start) {
-        int keyword = scan_keyword(lexer, word, len, valid_symbols);
+        int keyword = scan_keyword(lexer, word, len, past_end, valid_symbols);
         if (keyword == REJECTED) return false;
         if (keyword >= 0) {
             lexer->result_symbol = (TSSymbol)keyword;
             return true;
         }
     }
-    if (!name_valid || is_infinity(word, len) || is_subject_to(word, len)) return false;
+    if (at_line_start && valid_symbols[ST_KEYWORD] && is_subject_to(word, len)) {
+        // The optional same-line `:` belongs to the header; `::` does not.
+        while (!past_end && is_blank(lexer->lookahead)) lexer->advance(lexer, false);
+        if (!past_end && lexer->lookahead == ':') {
+            lexer->advance(lexer, false);
+            if (lexer->lookahead != ':') lexer->mark_end(lexer);
+        }
+        lexer->result_symbol = ST_KEYWORD;
+        return true;
+    }
+    if (!name_valid || past_end || is_infinity(word, len)) return false;
 
     // Skip whitespace and comments, as upstream does between a name and `:`.
     for (;;) {

@@ -32,6 +32,7 @@ tree-sitter-language = "0.1.7"
 cc = "1.2.56"
 
 [dev-dependencies]
+lp_parser_rs = "5.0.2"
 tree-sitter = "0.27.0"
 
 [lints.rust]

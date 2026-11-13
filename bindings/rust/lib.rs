@@ -54,6 +54,8 @@ pub const INDENTS_QUERY: &str = include_str!("../../queries/indents.scm");
 
 #[cfg(test)]
 mod tests {
+    mod differential;
+
     #[test]
     fn test_can_load_grammar() {
         let mut parser = tree_sitter::Parser::new();
