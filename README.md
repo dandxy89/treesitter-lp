@@ -61,7 +61,7 @@ vim.api.nvim_create_autocmd('User', {
   callback = function()
     require('nvim-treesitter.parsers').lp = {
       install_info = {
-        url = 'https://github.com/dandxy89/tree-sitter-lp',
+        url = 'https://github.com/dandxy89/treesitter-lp',
         queries = 'queries',
       },
     }
@@ -99,4 +99,4 @@ The grammar follows the LP dialect of [lp_parser_rs](https://github.com/dandxy89
 
 ## Licence
 
-MIT
+MIT OR Apache-2.0

@@ -3,11 +3,11 @@ name = "tree-sitter-lp"
 description = "Tree-sitter grammar for LP (Linear Programming) files"
 version = "0.1.0"
 authors = ["Dan"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 keywords = ["incremental", "parsing", "tree-sitter", "lp"]
 categories = ["parser-implementations", "parsing", "text-editors"]
-repository = "https://github.com/dandxy89/tree-sitter-lp"
+repository = "https://github.com/dandxy89/treesitter-lp"
 edition = "2021"
 autoexamples = false
 
@@ -18,7 +18,8 @@ include = [
   "queries/*",
   "src/*",
   "tree-sitter.json",
-  "/LICENSE",
+  "/LICENSE-MIT",
+  "/LICENSE-APACHE",
 ]
 
 [lib]
@@ -42,3 +43,10 @@ pedantic = { level = "warn", priority = -1 }
 nursery = { level = "warn", priority = -1 }
 undocumented_unsafe_blocks = "warn"
 unwrap_used = "warn"
+
+[profile.dev]
+# macOS keeps unpacked debuginfo .o files forever in the shared target dir; keep them small.
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false

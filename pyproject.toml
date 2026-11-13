@@ -15,11 +15,11 @@ classifiers = [
 ]
 authors = [{ name = "Dan" }]
 requires-python = ">=3.10"
-license.text = "MIT"
+license.text = "MIT OR Apache-2.0"
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://github.com/dandxy89/tree-sitter-lp"
+Homepage = "https://github.com/dandxy89/treesitter-lp"
 
 [project.optional-dependencies]
 core = ["tree-sitter~=0.24"]

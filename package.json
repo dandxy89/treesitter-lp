@@ -12,9 +12,9 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dandxy89/tree-sitter-lp"
+    "url": "https://github.com/dandxy89/treesitter-lp"
   },
-  "license": "MIT",
+  "license": "MIT OR Apache-2.0",
   "dependencies": {
     "node-addon-api": "^8.9.2",
     "node-gyp-build": "^4.8.4"
