@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   release:
-    uses: tree-sitter/workflows/.github/workflows/release.yml@d66eebce6bd661badf0ce10f1ce8f90ea8a89279 # main
+    uses: tree-sitter/workflows/.github/workflows/release.yml@dca539e07998ac429e185349d3dd194d2c7418d3 # main
     permissions:
       contents: write
       id-token: write
@@ -21,7 +21,7 @@ jobs:
       generate: true
 
   crates:
-    uses: tree-sitter/workflows/.github/workflows/package-crates.yml@d66eebce6bd661badf0ce10f1ce8f90ea8a89279 # main
+    uses: tree-sitter/workflows/.github/workflows/package-crates.yml@dca539e07998ac429e185349d3dd194d2c7418d3 # main
     permissions:
       contents: read
     secrets:
