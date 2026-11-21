@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    - cron: "0 3 * * *" # nightly: fuzz smoke runs only on this and manual dispatch
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -16,8 +19,28 @@ env:
   TREE_SITTER_REF: v0.27.0 # keep in step with tree-sitter-cli in package.json
 
 jobs:
-  test:
-    name: Test parser
+  # The committed src/ must be exactly what `tree-sitter generate` produces.
+  generate:
+    name: Generated parser is in sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up tree-sitter
+        uses: tree-sitter/setup-action/cli@faab9a23fa6195da0f1cf868219cc1e89f238d3d # v2
+        with:
+          tree-sitter-ref: ${{env.TREE_SITTER_REF}}
+      - name: Regenerate parser
+        run: tree-sitter generate
+      - name: Fail if src/ differs from the committed files
+        run: git diff --exit-code src/
+
+  # Corpus tests on every platform the parser is distributed for.
+  corpus:
+    name: Corpus tests (${{matrix.os}})
     runs-on: ${{matrix.os}}
     timeout-minutes: 20
     strategy:
@@ -33,12 +56,192 @@ jobs:
         uses: tree-sitter/setup-action/cli@faab9a23fa6195da0f1cf868219cc1e89f238d3d # v2
         with:
           tree-sitter-ref: ${{env.TREE_SITTER_REF}}
-      - name: Run tests
-        uses: tree-sitter/parser-test-action@05f6ce7c7e54603c45cd87ed926725dc870bcc63 # v3
+      - name: Run corpus tests
+        run: tree-sitter test
+      - name: Detect highlight tests
+        id: detect
+        shell: bash
+        run: |
+          if compgen -G "test/highlight/*.lp" > /dev/null; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No test/highlight/*.lp files; skipping highlight checks."
+          fi
+      - name: Check highlight captures
+        if: steps.detect.outputs.present == 'true'
+        run: tree-sitter highlight --check test/highlight/*.lp
+
+  # Rust binding: formatting, lints (warnings are errors) and the test suite,
+  # including the differential test against lp_parser_rs.
+  rust:
+    name: Rust binding
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          test-rust: ${{runner.os == 'Linux'}}
-          test-node: ${{runner.os == 'Linux'}}
-          test-python: ${{runner.os == 'Linux'}}
+          persist-credentials: false
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Clippy (warnings are errors)
+        run: cargo clippy --all-targets --locked -- -D warnings
+      - name: Test
+        run: cargo test --locked
+
+  # Node binding: the package installs, builds its native addon and loads the grammar.
+  node:
+    name: Node binding (Node ${{matrix.node}})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{matrix.node}}
+      - name: Install dependencies
+        run: npm ci
+      - name: Test binding
+        run: npm run test:bindings
+
+  # Python binding: built from source and tested with pytest.
+  python:
+    name: Python binding (Python ${{matrix.python}})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.13"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{matrix.python}}
+      - name: Install package and pytest
+        run: python -m pip install -e ".[core]" pytest
+      - name: Test binding
+        run: python -m pytest bindings/python/tests
+
+  # WebAssembly build, for the tree-sitter playground and browser editors.
+  wasm:
+    name: WebAssembly build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm ci
+      - name: Build WebAssembly module
+        run: npx tree-sitter build --wasm -o tree-sitter-lp.wasm
+      - name: Upload WebAssembly module
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tree-sitter-lp-wasm
+          path: tree-sitter-lp.wasm
+          if-no-files-found: error
+
+  # Fuzzing runs nightly and on manual dispatch, and only once a fuzz target exists.
+  fuzz-smoke:
+    name: Fuzz smoke test
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Detect fuzz target
+        id: detect
+        shell: bash
+        run: |
+          if [ -f fuzz/Cargo.toml ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No fuzz/Cargo.toml; skipping."
+          fi
+      - name: Install cargo-fuzz
+        if: steps.detect.outputs.present == 'true'
+        run: cargo install cargo-fuzz --locked
+      - name: Run parser fuzz target for 60 seconds
+        if: steps.detect.outputs.present == 'true'
+        run: cargo fuzz run parse -- -max_total_time=60
+
+  # Benchmarks must compile; they are not run in CI.
+  bench-build:
+    name: Benchmarks compile
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Detect benchmark
+        id: detect
+        shell: bash
+        run: |
+          if [ -f benches/parse.rs ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No benches/parse.rs; skipping."
+          fi
+      - name: Compile benchmarks
+        if: steps.detect.outputs.present == 'true'
+        run: cargo bench --no-run --locked
+
+  # Downstream: lp-lsp (lp_parser_rs) must build and pass its tests against this checkout.
+  downstream:
+    name: Downstream lp-lsp
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Checkout lp_parser_rs
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: dandxy89/lp_parser_rs
+          ref: main
+          path: lp_parser_rs
+          persist-credentials: false
+      - name: Point lp-lsp at this checkout
+        shell: bash
+        run: |
+          # A [patch] whose version does not match the requirement is silently
+          # ignored, so the requirement is rewritten to this checkout's version.
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)
+          sed -i -E "s/^tree-sitter-lp = .*/tree-sitter-lp = \"${version}\"/" lp_parser_rs/lsp/Cargo.toml
+          grep -n '^tree-sitter-lp' lp_parser_rs/lsp/Cargo.toml
+          echo "CHECKOUT=${GITHUB_WORKSPACE}" >> "$GITHUB_ENV"
+      - name: Test lp-lsp against this grammar
+        working-directory: lp_parser_rs
+        run: cargo test -p lp-lsp --config "patch.crates-io.tree-sitter-lp.path=\"${CHECKOUT}\""
 
   query:
     name: Validate queries
@@ -73,3 +276,22 @@ jobs:
           persist-credentials: false
       - name: Check grammar.js formatting
         run: npx --yes prettier@3 --check grammar.js
+
+  # Reference docs: ast-nodes.md must match the grammar's node types.
+  docs:
+    name: Generated docs are in sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Regenerate AST reference
+        run: node scripts/gen-ast-docs.mjs
+      - name: Fail if docs/ast-nodes.md is stale
+        run: git diff --exit-code docs/ast-nodes.md
