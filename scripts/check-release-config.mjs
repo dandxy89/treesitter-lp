@@ -1,7 +1,7 @@
 // Checks the release-please setup without any dependency:
 //   node scripts/check-release-config.mjs
 //
-// - the config has the single root package and release type `simple`;
+// - the config has the single root package and release type `rust`;
 // - the manifest version equals the version in every extra-file, and every
 //   extra-file jsonpath resolves;
 // - with TAG_NAME set, the tag is `v<version>`.
@@ -26,7 +26,7 @@ check(
   "config must declare exactly one package, `.`",
 );
 const pkg = config.packages?.["."] ?? {};
-check(pkg["release-type"] === "simple", "release-type must be `simple`");
+check(pkg["release-type"] === "rust", "release-type must be `rust`");
 check(
   pkg["include-component-in-tag"] === false,
   "tags must be plain `v<version>` (include-component-in-tag false)",
@@ -88,12 +88,17 @@ for (const file of pkg["extra-files"] ?? []) {
       `${key} is ${resolve()}, manifest says ${version}`,
     );
 }
-// Cargo.lock is optional; the rest are required by the release contract.
+// Cargo.toml and Cargo.lock are bumped by the "rust" release type, not
+// extra-files (the TOML updater cannot match Cargo.lock's [[package]] filter).
 for (const key of Object.keys(resolvers)) {
-  check(
-    declared.has(key) || key.startsWith("Cargo.lock"),
-    `missing extra-file ${key}`,
-  );
+  const native = key.startsWith("Cargo.");
+  if (native) {
+    check(!declared.has(key), `${key} must not be an extra-file`);
+    check(
+      resolvers[key]() === version,
+      `${key} is ${resolvers[key]()}, manifest says ${version}`,
+    );
+  } else check(declared.has(key), `missing extra-file ${key}`);
 }
 
 const tag = process.env.TAG_NAME;
