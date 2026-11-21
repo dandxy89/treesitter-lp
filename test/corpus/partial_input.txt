@@ -1,0 +1,606 @@
+================================================================================
+Cut after the sense
+:error
+================================================================================
+maximize
+--------------------------------------------------------------------------------
+
+(ERROR
+  (sense))
+
+================================================================================
+Cut mid objective
+:error
+================================================================================
+min
+ obj: 3 x + 2
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)))))
+  (constraints_section
+    (subject_to_keyword)))
+
+================================================================================
+Cut after objective name
+:error
+================================================================================
+min
+ obj:
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)))
+  (constraints_section
+    (subject_to_keyword)))
+
+================================================================================
+Cut after Subject To is still a valid file
+================================================================================
+min
+ obj: x
+subject to
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)))
+
+================================================================================
+Cut mid constraint name
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+ c2
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (ERROR
+    (identifier)))
+
+================================================================================
+Cut after constraint colon
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+ c2:
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (ERROR
+    (objective_name)))
+
+================================================================================
+Cut mid constraint expression
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+ c2: x + 2 y +
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (ERROR
+    (objective_name)
+    (term
+      (identifier))
+    (term
+      (number)
+      (identifier))))
+
+================================================================================
+Cut after operator
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+ c2: x <=
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))))
+
+================================================================================
+Cut before rhs of ranged constraint
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: -5 <= x <=
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier)))))
+  (ERROR
+    (comparison_operator)))
+
+================================================================================
+Cut after Bounds is still a valid file
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+bounds
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)))
+
+================================================================================
+Cut mid bound
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+bounds
+ 0 <= x <= 4
+ 0 <= y <=
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)))
+  (ERROR
+    (comparison_operator)))
+
+================================================================================
+Cut mid bound after a name
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+bounds
+ 0 <= x <= 4
+ y
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (free_keyword))))
+
+================================================================================
+Cut inside a block comment
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+\* an open
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (line_comment)
+  (ERROR
+    (identifier)
+    (identifier)))
+
+================================================================================
+Cut inside a quadratic block
+:error
+================================================================================
+min
+ obj: x + [ x ^
+--------------------------------------------------------------------------------
+
+(ERROR
+  (sense)
+  (objective_name)
+  (term
+    (identifier))
+  (identifier))
+
+================================================================================
+Cut mid SOS header
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+sos
+ s1: S1 :
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (sos_section
+    (sos_keyword))
+  (ERROR
+    (identifier)
+    (sos_type)))
+
+================================================================================
+Cut mid general constraint
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+general constraints
+ g1: r = MAX ( x ,
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (general_constraints_section
+    (general_constraints_keyword))
+  (ERROR
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier)))
+
+================================================================================
+Cut before end is still a valid file
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+bounds
+ x <= 4
+generals
+ x
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier)))
+
+================================================================================
+Later sections survive a broken constraint
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x + y >=
+bounds
+ 0 <= x <= 4
+generals
+ x
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Later constraints survive a broken one
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x + y >=
+ c2: x >= 1
+ c3: y >= 2
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))

@@ -1,0 +1,607 @@
+================================================================================
+Special characters inside names
+================================================================================
+min
+ obj: x.1 + a[1] + {b} + p#q + r$s + t%u + a&b + c(d,e) + f;g + h?i + j@k + l'm + n~o
+st
+ c1: x.1 + a[1] >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Special characters leading a name
+================================================================================
+min
+ obj: !bang + #hash + $dollar + %pct + &amp + (paren) + ,comma + .dot + ;semi + ?q + @at + 'tick + ~tilde + [br] + {cb}
+st
+ c1: !bang + .dot >= 0
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Hyphen, pipe and greater-than inside names
+================================================================================
+min
+ obj: in-flow + out-flow2 + a|b + x>y + net>_z
+st
+ c1: in-flow - out-flow2 = 0
+ c2: p>q + a-b >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Greater-than before a digit is a comparison
+================================================================================
+min
+ obj: x
+st
+ c1: y>3
+ c2: y>=3
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Keywords as identifier prefixes
+================================================================================
+min
+ obj: minx + maximum_cost + stx + endpoint + binx + sosa + freedom + information + infx + s1a + generalx + boundsx
+st
+ c1: minx + endpoint >= 1
+integers
+ binx sosa
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (integers_section
+    (integers_keyword)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Keyword prefixes starting a line
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+ stable_flag + x >= 0
+ endpoint_a <= 4
+bounds
+ boundsx <= 3
+ freeform free
+generals
+ genx
+binaries
+ binary_flag
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (free_keyword)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Keywords are case insensitive
+================================================================================
+MAXIMIZE
+ OBJ: X
+SUBJECT TO
+ C1: X <= 4
+BOUNDS
+ X FREE
+GENERALS
+ X
+END
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (free_keyword)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Mixed case section headers
+================================================================================
+Minimize
+ obj: x
+Subject To
+ c1: x >= 1
+Bounds
+ x <= 9
+Binaries
+ b
+Semi-Continuous
+ s
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier))
+  (semi_continuous_section
+    (semi_continuous_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Non-ASCII letter is not an identifier character
+:error
+================================================================================
+min
+ obj: café
+st
+ c1: café >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (ERROR
+    (ERROR))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (ERROR
+        (ERROR))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Non-ASCII letter inside an otherwise valid name
+:error
+================================================================================
+min
+ obj: x + naïve
+st
+ c1: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))))
+    (ERROR
+      (ERROR)
+      (identifier)
+      (identifier))
+    (named_objective
+      name: (objective_name)
+      (ERROR
+        (identifier))
+      (linear_expression
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)))
+
+================================================================================
+Emoji and CJK in a comment are fine
+================================================================================
+\ モデル 🚀
+min
+ obj: x
+st
+ c1: x >= 1 \ über
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (line_comment)
+  (end_marker))
+
+================================================================================
+Non-ASCII text inside a block comment
+================================================================================
+min
+ obj: x
+st
+ \* naïve 日本語 *\
+ c1: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (block_comment)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Tabs and carriage returns between tokens
+================================================================================
+min
+	obj:	x	+	2	y
+st
+	c1:	x	>=	1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Very long identifier
+================================================================================
+min
+ obj: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+st
+ c1: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))

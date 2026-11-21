@@ -1,0 +1,350 @@
+================================================================================
+Gurobi multi-objective
+================================================================================
+\ Gurobi-style multi-objective model
+Maximize multi-objectives
+ profit: Priority=2 Weight=1 AbsTol=0.5 RelTol=0.01 12 x + 9 y + 11 z
+ balance: Priority=1 Weight=-1 x - y
+Subject To
+ machine: 3 x + 2 y + 4 z <= 120
+ labour: x + y + z <= 40
+ demand_x: x >= 2
+Bounds
+ 0 <= x <= 30
+ 0 <= y <= 30
+ 0 <= z <= 30
+General
+ z
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (multi_objectives_keyword)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (objective_attribute
+        (attribute_name)
+        (number))
+      (objective_attribute
+        (attribute_name)
+        (number))
+      (objective_attribute
+        (attribute_name)
+        (number))
+      (objective_attribute
+        (attribute_name)
+        (number))
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))))
+    (named_objective
+      (objective_name)
+      (objective_attribute
+        (attribute_name)
+        (number))
+      (objective_attribute
+        (attribute_name)
+        (number))
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Gurobi general constraints and indicators
+================================================================================
+\ Gurobi-style general constraints and indicators
+Minimize
+ cost: 3 x + 2 y + m + a
+Subject To
+ link: x + y + z >= 4
+ ind1: b = 1 -> x + y <= 3
+ ind2: b = 0 -> x - y >= 1
+General Constraints
+ gmax: m = MAX ( x , y , 3 )
+ gabs: a = ABS ( z )
+ gand: r = AND ( b , c )
+ gor: s = OR ( b , c )
+ gmin: n = MIN ( x , y )
+Bounds
+ -10 <= z <= 10
+ 0 <= x <= 20
+ 0 <= y <= 20
+Binaries
+ b c r s
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (indicator
+        (identifier)
+        (number))
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (indicator
+        (identifier)
+        (number))
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (general_constraints_section
+    (general_constraints_keyword)
+    (general_constraint
+      (constraint_name)
+      (identifier)
+      (function_name)
+      (identifier)
+      (identifier)
+      (number))
+    (general_constraint
+      (constraint_name)
+      (identifier)
+      (function_name)
+      (identifier))
+    (general_constraint
+      (constraint_name)
+      (identifier)
+      (function_name)
+      (identifier)
+      (identifier))
+    (general_constraint
+      (constraint_name)
+      (identifier)
+      (function_name)
+      (identifier)
+      (identifier))
+    (general_constraint
+      (constraint_name)
+      (identifier)
+      (function_name)
+      (identifier)
+      (identifier)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+Gurobi SOS on one line and semi-continuous
+================================================================================
+\ Gurobi-style SOS and semi-continuous variables
+Minimize
+ obj: x + y + z
+Subject To
+ c0: x + y + z >= 2
+Bounds
+ 2 <= x <= 10
+ y <= 8
+ z free
+Semi-Continuous
+ x
+Generals
+ y
+SOS
+ sos1: S1 :: x : 1 y : 2
+ sos2: S2 :: y : 1 z : 2
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (free_keyword)))
+  (semi_continuous_section
+    (semi_continuous_keyword)
+    (identifier))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_constraint_header
+      (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))

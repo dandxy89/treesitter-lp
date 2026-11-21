@@ -1,0 +1,256 @@
+================================================================================
+PuLP transport with __dummy
+================================================================================
+\* Transport *\
+Minimize
+OBJ: 2 Route_A_X + 4 Route_A_Y + 5 Route_B_X + 3 Route_B_Y + 0 __dummy
+Subject To
+Supply_A: Route_A_X + Route_A_Y <= 30
+Supply_B: Route_B_X + Route_B_Y <= 40
+Demand_X: Route_A_X + Route_B_X >= 25
+Demand_Y: Route_A_Y + Route_B_Y >= 35
+_C1: __dummy = 0
+Bounds
+ 0 <= Route_A_X <= 1e+30
+ Route_A_Y >= 0
+ Route_B_X >= 0
+ Route_B_Y >= 0
+ __dummy = 0
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (block_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+PuLP MIP with _dummy
+================================================================================
+\* assignment *\
+Maximize
+OBJ: 3 x_1 + 4 x_2 + 5 x_3 + 0 _dummy
+Subject To
+_C1: x_1 + x_2 + x_3 <= 2
+_C2: x_1 - x_2 >= -1
+_C3: _dummy = 0
+Bounds
+ _dummy = 0
+Binaries
+x_1
+x_2
+x_3
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (block_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+PuLP names with brackets and underscores
+================================================================================
+\* names_with_underscores *\
+Minimize
+OBJ: 1 flow_(1,_2) + 2 flow_(2,_3) + 3 stock_[a]
+Subject To
+balance_1: flow_(1,_2) - flow_(2,_3) = 0
+balance_2: flow_(2,_3) + stock_[a] >= 4
+Bounds
+ flow_(1,_2) <= 100
+ flow_(2,_3) <= 100
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (block_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))

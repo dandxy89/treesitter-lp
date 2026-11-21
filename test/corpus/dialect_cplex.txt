@@ -1,0 +1,753 @@
+================================================================================
+CPLEX diet problem
+================================================================================
+\Problem name: diet
+
+Minimize
+ obj: 0.18 bread + 0.23 milk + 0.05 cheese + 0.69 potato + 0.31 fish + 0.75 yogurt
+Subject To
+ calories: 81 bread + 215 milk + 6 cheese + 107 potato + 133 fish + 128 yogurt >= 2000
+ protein: 4 bread + 9 milk + 1 cheese + 3 potato + 12 fish + 8 yogurt >= 55
+ calcium: 7 bread + 70 milk + 2 cheese + 20 potato + 12 fish + 40 yogurt >= 800
+ variety: bread + milk + cheese + potato + fish + yogurt <= 12
+Bounds
+ 0 <= bread <= 10
+ 0 <= milk <= 10
+ 0 <= cheese <= 10
+ 0 <= potato <= 10
+ 0 <= fish <= 10
+ 0 <= yogurt <= 10
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+CPLEX knapsack with binaries
+================================================================================
+\Problem name: knapsack
+\ Written in the style of CPLEX Interactive Optimizer output.
+
+Maximize
+ obj: 10 x1 + 13 x2 + 18 x3 + 31 x4 + 7 x5 + 15 x6
+Subject To
+ c1: 11 x1 + 15 x2 + 20 x3 + 35 x4 + 10 x5 + 33 x6 <= 47
+ c2: x1 + x2 >= 0
+Bounds
+ 0 <= x1 <= 1
+ 0 <= x2 <= 1
+ 0 <= x3 <= 1
+ 0 <= x4 <= 1
+ 0 <= x5 <= 1
+ 0 <= x6 <= 1
+Binaries
+ x1 x2 x3 x4 x5 x6
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (binaries_section
+    (binaries_keyword)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+CPLEX ranges and SOS
+================================================================================
+\Problem name: ranges_sos
+Minimize
+ obj: 2 x + 3 y + z + w
+Subject To
+ r1: -5 <= x + y <= 10
+ r2: x - z >= -4
+ r3: 2 y + w <= 8
+ r4: 3 <= x + w
+Bounds
+ x free
+ -inf <= y <= +inf
+ 0 <= z <= 40
+ w >= 2
+Generals
+ w
+SOS
+ s1: S1 ::
+ x : 1
+ y : 2
+ z : 3
+ s2: S2 :: 
+ x : 1
+ y : 2
+ w : 3
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (free_keyword))
+    (bound_declaration
+      (infinity)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (infinity))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_constraint_header
+      (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))
+
+================================================================================
+CPLEX semi-continuous
+================================================================================
+\Problem name: semi
+Maximize
+ obj: 4 a + 5 b + 3 c
+Subject To
+ cap: a + b + c <= 100
+ mix: a - b >= -20
+Bounds
+ 5 <= a <= 50
+ 10 <= b <= 60
+ c <= 30
+Semi-continuous
+ a b
+Integers
+ c
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (semi_continuous_section
+    (semi_continuous_keyword)
+    (identifier)
+    (identifier))
+  (integers_section
+    (integers_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+CPLEX lazy constraints and user cuts
+================================================================================
+\Problem name: lazy_cuts
+Minimize
+ obj: x + 2 y + 3 z
+Subject To
+ base: x + y + z >= 3
+Lazy Constraints
+ lz1: x - y <= 2
+ lz2: y - z <= 2
+User Cuts
+ uc1: x + y + z <= 20
+Bounds
+ 0 <= x <= 10
+ 0 <= y <= 10
+ 0 <= z <= 10
+General
+ x y z
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (lazy_constraints_section
+    (lazy_constraints_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (user_cuts_section
+    (user_cuts_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier)
+    (identifier)
+    (identifier))
+  (end_marker))
+
+================================================================================
+CPLEX quadratic
+================================================================================
+\Problem name: qp
+Minimize
+ obj: 2 x + 3 y + [ x ^ 2 + 4 x * y + 2 y ^ 2 ] / 2
+Subject To
+ c1: x + y >= 1
+ q1: x + [ x ^ 2 + y ^ 2 ] <= 25
+Bounds
+ 0 <= x <= 20
+ 0 <= y <= 20
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (quadratic_block
+          (quadratic_term
+            (identifier)
+            (number))
+          (quadratic_term
+            (number)
+            (identifier)
+            (identifier))
+          (quadratic_term
+            (number)
+            (identifier)
+            (number))
+          (number)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (quadratic_block
+          (quadratic_term
+            (identifier)
+            (number))
+          (quadratic_term
+            (identifier)
+            (number))))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+CPLEX problem name comment
+================================================================================
+\Problem name: demo
+Minimize
+ obj: x
+Subject To
+ c1: x >= 1
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))

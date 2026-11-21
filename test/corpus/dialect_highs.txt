@@ -1,0 +1,199 @@
+================================================================================
+HiGHS writer output
+================================================================================
+\ Problem written in the style of HiGHS' LP writer.
+Minimize
+ obj: +3 x0 +2 x1 +4 x2 +1 x3
+Subject To
+ c0: +1 x0 +1 x1 +1 x2 +1 x3 >= 10
+ c1: +2 x0 -1 x1 <= 15
+ c2: +1 x1 -1 x2 = 0
+ c3: -4 <= +1 x0 -1 x3 <= 4
+Bounds
+ 0 <= x0 <= 8
+ 0 <= x1 <= inf
+ x2 = 3
+ -inf <= x3 <= 12
+Generals
+ x0
+End
+--------------------------------------------------------------------------------
+
+(source_file
+  (line_comment)
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (number)
+      (comparison_operator)
+      (linear_expression
+        (term
+          (number)
+          (identifier))
+        (term
+          (number)
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (infinity))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (infinity)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (generals_section
+    (generals_keyword)
+    (identifier))
+  (end_marker))
+
+================================================================================
+HiGHS infinity spellings
+================================================================================
+max
+ obj: x + y + z
+st
+ c1: x + y <= 10
+ c2: y + z <= inf
+ c3: x - z >= -infinity
+bounds
+ 0 <= x <= Infinity
+ -INF <= y <= 5
+ z <= +inf
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (infinity))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (infinity)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (infinity))
+    (bound_declaration
+      (infinity)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number))
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (infinity)))
+  (end_marker))
