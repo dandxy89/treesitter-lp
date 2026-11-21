@@ -44,43 +44,24 @@ npm install              # install dependencies
 npm run build            # regenerate src/parser.c from grammar.js
 npm test                 # run the corpus tests in test/corpus/
 npm run parse -- FILE    # print the syntax tree for an .lp file
+npm run test:bindings    # Node binding test
+npm run docs:ast        # regenerate docs/ast-nodes.md from src/node-types.json
+npm run build:wasm       # build the WebAssembly module (needs Docker or Emscripten)
 cargo test               # Rust binding tests, including the differential test against lp_parser_rs
 npx prettier@3 --write grammar.js  # format grammar.js
 ```
 
+CI (`.github/workflows/ci.yml`) runs each of these on the platforms it supports, and fails if the generated files in `src/` or `docs/ast-nodes.md` are out of date.
+
 After editing `grammar.js`, run `npm run build` then `npm test`. The generated files in `src/` are committed, so commit them alongside the grammar change.
 
-## Neovim
+## Documentation
 
-These steps target the `main` branch of [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter/tree/main). Add to your config (e.g. `init.lua`):
-
-```lua
-vim.filetype.add({ extension = { lp = 'lp' } })
-
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'TSUpdate',
-  callback = function()
-    require('nvim-treesitter.parsers').lp = {
-      install_info = {
-        url = 'https://github.com/dandxy89/treesitter-lp',
-        queries = 'queries',
-      },
-    }
-  end,
-})
-
--- Enable highlighting and folding for LP buffers
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'lp',
-  callback = function()
-    vim.treesitter.start()
-    vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
-    vim.wo.foldmethod = 'expr'
-  end,
-})
-```
-
-Then run `:TSInstall lp`.
+- [Syntax reference](docs/syntax-reference.md): the LP syntax the grammar accepts, section by section.
+- [Supported dialects](docs/supported-dialects.md): which constructs CPLEX, Gurobi, HiGHS, PuLP, lp_parser_rs and this grammar support.
+- [Tree-sitter API](docs/tree-sitter-api.md): the Rust, Node and Python entry points, query files and frozen node kinds.
+- [AST node types](docs/ast-nodes.md): every named node kind, generated from the grammar.
+- [Editor integration](docs/editor-integration.md): Neovim, Helix and VS Code, with the lp-lsp language server.
 
 ## Bindings
 
@@ -93,6 +74,15 @@ let tree = parser.parse("min\n x\nst\n x >= 0\nend\n", None).unwrap();
 ```
 
 The Node.js (`tree-sitter-lp`) and Python (`tree_sitter_lp`) packages expose the same language object and query strings.
+
+## Not planned
+
+These are deliberately left out of this project:
+
+- Dialect validation. The grammar stays permissive. lp_parser_rs performs the semantic checks.
+- Go and C bindings.
+- A standalone playground. Use `tree-sitter playground`, or the WebAssembly build (`npm run build:wasm`).
+- An LSP, formatter or VS Code extension for this grammar. These live in lp-lsp, in lp_parser_rs.
 
 ## Acknowledgements
 
