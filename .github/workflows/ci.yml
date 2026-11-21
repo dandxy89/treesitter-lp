@@ -295,3 +295,27 @@ jobs:
         run: node scripts/gen-ast-docs.mjs
       - name: Fail if docs/ast-nodes.md is stale
         run: git diff --exit-code docs/ast-nodes.md
+
+  # The release setup: version fields agree and the config matches the schema.
+  release-config:
+    name: Release configuration
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Check versions and config shape
+        run: node scripts/check-release-config.mjs
+      - name: Validate against the release-please schema
+        run: |
+          curl --fail --silent --show-error --location \
+            https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json \
+            --output "$RUNNER_TEMP/release-please-schema.json"
+          npx --yes ajv-cli@5 validate --strict=false \
+            -s "$RUNNER_TEMP/release-please-schema.json" -d release-please-config.json
