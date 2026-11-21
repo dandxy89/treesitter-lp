@@ -35,8 +35,10 @@ jobs:
           tree-sitter-ref: ${{env.TREE_SITTER_REF}}
       - name: Regenerate parser
         run: tree-sitter generate
+      # The release PR bumps tree-sitter.json but cannot regenerate parser.c,
+      # so the embedded metadata version is exempt.
       - name: Fail if src/ differs from the committed files
-        run: git diff --exit-code src/
+        run: git diff --exit-code -I'^ +\.(major|minor|patch)_version = ' src/
 
   # Corpus tests on every platform the parser is distributed for.
   corpus:
