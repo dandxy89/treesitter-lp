@@ -52,9 +52,17 @@ pub const FOLDS_QUERY: &str = include_str!("../../queries/folds.scm");
 /// The indentation query for this grammar (`queries/indents.scm`).
 pub const INDENTS_QUERY: &str = include_str!("../../queries/indents.scm");
 
+/// The symbol tagging query for this grammar (`queries/tags.scm`).
+pub const TAGS_QUERY: &str = include_str!("../../queries/tags.scm");
+
 #[cfg(test)]
 mod tests {
     mod differential;
+    mod fixtures;
+    mod node_types;
+    mod queries;
+    mod recovery;
+    mod smoke;
 
     #[test]
     fn test_can_load_grammar() {
@@ -84,6 +92,7 @@ mod tests {
             ("locals", super::LOCALS_QUERY),
             ("folds", super::FOLDS_QUERY),
             ("indents", super::INDENTS_QUERY),
+            ("tags", super::TAGS_QUERY),
         ] {
             if let Err(e) = tree_sitter::Query::new(&language, source) {
                 panic!("{name} query does not compile: {e}");

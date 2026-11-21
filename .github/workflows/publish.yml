@@ -3,16 +3,50 @@ name: Publish package
 on:
   push:
     tags: ["v*"]
+  # Called by release-please.yml: tags pushed with the default GITHUB_TOKEN do
+  # not trigger the `push` event above, so the release workflow calls this one.
+  workflow_call:
+    inputs:
+      tag_name:
+        description: The release tag being published, for example v0.2.0
+        required: true
+        type: string
 
 permissions: {}
 
 concurrency:
-  group: ${{github.workflow}}-${{github.ref}}
+  group: ${{github.workflow}}-${{inputs.tag_name || github.ref}}
   cancel-in-progress: false # never abort a half-finished release
 
 jobs:
+  # Refuse to publish when the tag and the version fields disagree.
+  verify:
+    name: Tag matches versions
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{inputs.tag_name || github.ref}}
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Check the tag against every version field
+        env:
+          TAG_NAME: ${{inputs.tag_name || github.ref_name}}
+        run: node scripts/check-release-config.mjs
+
+  # The GitHub release is created by release-please when called from there;
+  # a hand-pushed tag still gets its artefacts built here.
   release:
-    uses: tree-sitter/workflows/.github/workflows/release.yml@d66eebce6bd661badf0ce10f1ce8f90ea8a89279 # main
+    if: ${{github.ref_type == 'tag'}}
+    needs: verify
+    uses: tree-sitter/workflows/.github/workflows/release.yml@dca539e07998ac429e185349d3dd194d2c7418d3 # main
     permissions:
       contents: write
       id-token: write
@@ -21,7 +55,8 @@ jobs:
       generate: true
 
   crates:
-    uses: tree-sitter/workflows/.github/workflows/package-crates.yml@d66eebce6bd661badf0ce10f1ce8f90ea8a89279 # main
+    needs: verify
+    uses: tree-sitter/workflows/.github/workflows/package-crates.yml@dca539e07998ac429e185349d3dd194d2c7418d3 # main
     permissions:
       contents: read
     secrets:
@@ -31,3 +66,28 @@ jobs:
       package-name: tree-sitter-lp
       # No `generate`: the committed parser is published as it is, and a
       # regenerated one would leave the tree dirty for `cargo publish`.
+
+  # Opt in with the repository variable PUBLISH_NPM=true (and NODE_AUTH_TOKEN).
+  npm:
+    if: ${{vars.PUBLISH_NPM == 'true'}}
+    needs: verify
+    uses: tree-sitter/workflows/.github/workflows/package-npm.yml@dca539e07998ac429e185349d3dd194d2c7418d3 # main
+    permissions:
+      contents: read
+    secrets:
+      NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
+    with:
+      package-name: tree-sitter-lp
+
+  # Opt in with the repository variable PUBLISH_PYPI=true (and PYPI_API_TOKEN).
+  pypi:
+    if: ${{vars.PUBLISH_PYPI == 'true'}}
+    needs: verify
+    uses: tree-sitter/workflows/.github/workflows/package-pypi.yml@dca539e07998ac429e185349d3dd194d2c7418d3 # main
+    permissions:
+      contents: read
+      id-token: write
+    secrets:
+      PYPI_API_TOKEN: ${{secrets.PYPI_API_TOKEN}}
+    with:
+      package-name: tree-sitter-lp

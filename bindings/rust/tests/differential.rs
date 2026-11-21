@@ -915,6 +915,33 @@ mod tests {
         );
     }
 
+    /// Every hand-written fixture is compared too. A fixture `lp_parser_rs`
+    /// rejects is not compared, but most must be accepted so the comparison
+    /// means something.
+    #[test]
+    fn agrees_with_lp_parser_rs_on_fixtures() {
+        let mut parser = parser();
+        let (mut agreed, mut rejected) = (0usize, Vec::new());
+        for path in crate::tests::fixtures::lp_files(&crate::tests::fixtures::fixtures_dir()) {
+            let input = std::fs::read_to_string(&path)
+                .unwrap_or_else(|e| panic!("cannot read {}: {e}", path.display()));
+            match compare(&mut parser, &input) {
+                (Verdict::Agree, _) => agreed += 1,
+                (Verdict::Rejected, _) => rejected.push(path.display().to_string()),
+                (verdict, detail) => {
+                    panic!("{verdict:?} on fixture {}:\n{detail}", path.display())
+                }
+            }
+        }
+        assert!(
+            agreed >= rejected.len() * 2,
+            "lp_parser_rs rejects too many fixtures ({} of {}): {rejected:?}",
+            rejected.len(),
+            agreed + rejected.len()
+        );
+        eprintln!("fixtures: {agreed} agree, rejected upstream: {rejected:?}");
+    }
+
     /// The scanner must not rescan the line for every token (`get_column`), nor
     /// keep parallel parse stacks alive, on a single very long line.
     #[test]

@@ -1,0 +1,713 @@
+================================================================================
+Missing right-hand side
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >=
+ c2: x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Missing colon after a constraint name keeps the rest
+:error
+================================================================================
+min
+ obj: x
+st
+ c1 x >= 1
+ c2: x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (ERROR
+        (identifier))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Missing operator
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x + y 1
+ c2: x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Stray operator
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x + >= 1
+ c2: x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (ERROR)
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Doubled operator
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x >= >= 1
+ c2: x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (ERROR
+        (comparison_operator))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Stray closing bracket
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x + y ] >= 1
+ c2: x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (ERROR
+        (identifier))
+      (comparison_operator)
+      (number))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Unterminated block comment
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+\* never closed
+bounds
+ x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (line_comment)
+  (ERROR
+    (identifier)
+    (identifier))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Unterminated quadratic block
+:error
+================================================================================
+min
+ obj: x + [ x ^ 2
+st
+ c1: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (quadratic_block
+          (quadratic_term
+            (identifier)
+            (number))))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Section header typo: subject
+:error
+================================================================================
+min
+ obj: x
+subjec to
+ c1: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))))
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))))
+    (named_objective
+      name: (objective_name)
+      (ERROR
+        (identifier))
+      (linear_expression
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)))
+
+================================================================================
+Section header typo: bounds
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+bonds
+ x <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (linear_expression
+        (term
+          (identifier)))
+      (ERROR
+        (identifier))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Misspelt sense
+:error
+================================================================================
+maximze
+ obj: x
+st
+ c1: x <= 1
+end
+--------------------------------------------------------------------------------
+
+(ERROR
+  (identifier)
+  (identifier)
+  (identifier)
+  (subject_to_keyword)
+  (identifier)
+  (identifier)
+  (number)
+  (end_marker))
+
+================================================================================
+Missing Subject To
+:error
+================================================================================
+min
+ obj: x
+ c1: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))))
+    (named_objective
+      name: (objective_name)
+      (ERROR
+        (identifier))
+      (linear_expression
+        (term
+          (number)
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)))
+
+================================================================================
+Bound split over two lines is one bound
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1
+bounds
+ 0 <=
+ y <= 4
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (bounds_section
+    (bounds_keyword)
+    (bound_declaration
+      (number)
+      (comparison_operator)
+      (identifier)
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+SOS entry without a weight
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x + y >= 1
+sos
+ s1: S1 ::
+ x :
+ y : 2
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (sos_section
+    (sos_keyword)
+    (sos_constraint_header
+      name: (sos_name)
+      (sos_type))
+    (sos_entry
+      (identifier)
+      (number))
+    (sos_entry
+      (identifier)
+      (number)))
+  (end_marker))
+
+================================================================================
+General constraint missing a parenthesis
+:error
+================================================================================
+min
+ obj: x + y
+st
+ c1: x + y >= 1
+general constraints
+ g1: r = MAX ( x , y
+ g2: s = ABS ( x )
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (general_constraints_section
+    (general_constraints_keyword)
+    (general_constraint
+      name: (constraint_name)
+      resultant: (identifier)
+      function: (function_name)
+      (identifier)
+      (identifier))
+    (general_constraint
+      name: (constraint_name)
+      resultant: (identifier)
+      function: (function_name)
+      (identifier)))
+  (end_marker))
+
+================================================================================
+Indicator without an arrow reads as two constraints
+================================================================================
+min
+ obj: x + y
+st
+ c1: b = 1 x + y <= 3
+ c2: x >= 1
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      (objective_name)
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (linear_expression
+        (term
+          (identifier))
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (constraint
+      (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Garbage characters
+:error
+================================================================================
+min
+ obj: x
+st
+ c1: x >= 1 §§§
+ c2: x <= 9
+end
+--------------------------------------------------------------------------------
+
+(source_file
+  (sense)
+  (objectives_section
+    (named_objective
+      name: (objective_name)
+      (linear_expression
+        (term
+          (identifier)))))
+  (constraints_section
+    (subject_to_keyword)
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number))
+    (ERROR
+      (ERROR))
+    (constraint
+      name: (constraint_name)
+      (linear_expression
+        (term
+          (identifier)))
+      (comparison_operator)
+      (number)))
+  (end_marker))
+
+================================================================================
+Empty input
+:error
+================================================================================
+
+--------------------------------------------------------------------------------
+
+(ERROR)
+
+================================================================================
+Only whitespace
+:error
+================================================================================
+   
+
+ 	
+--------------------------------------------------------------------------------
+
+(ERROR)
+
+================================================================================
+Only a comment
+:error
+================================================================================
+\ nothing here
+--------------------------------------------------------------------------------
+
+(ERROR
+  (line_comment))
+
+================================================================================
+Sense only
+:error
+================================================================================
+min
+--------------------------------------------------------------------------------
+
+(ERROR
+  (sense))
