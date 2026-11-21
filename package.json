@@ -26,7 +26,11 @@
   "scripts": {
     "build": "tree-sitter generate",
     "test": "tree-sitter test",
-    "parse": "tree-sitter parse"
+    "parse": "tree-sitter parse",
+    "lint": "npx --yes prettier@3 --check grammar.js scripts/gen-ast-docs.mjs",
+    "docs:ast": "node scripts/gen-ast-docs.mjs",
+    "build:wasm": "tree-sitter build --wasm -o tree-sitter-lp.wasm",
+    "test:bindings": "node --test bindings/node/binding_test.js"
   },
   "files": [
     "grammar.js",
