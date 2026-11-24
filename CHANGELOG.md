@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/dandxy89/treesitter-lp/compare/v0.2.0...v0.2.1) (2026-11-24)
+
+
+### Continuous Integration
+
+* fix downstream lp-lsp fixtures path and drop nightly schedule ([9edfa15](https://github.com/dandxy89/treesitter-lp/commit/9edfa1541b62d27d5d788bed6bbcde457c4cc7ae))
+
 ## [0.2.0](https://github.com/dandxy89/treesitter-lp/compare/v0.1.1...v0.2.0) (2026-11-21)
 
 
